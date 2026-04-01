@@ -5,7 +5,7 @@
       <h1>ตารางงาน</h1>
     </header>
     <div class="warning" v-if="windowWidth < 650">
-      ใช้จอแนวนอนเพื่อดูตารางงาน หรือใช้งานบน Tablat / PC
+      ใช้จอแนวนอนเพื่อดูตารางงาน หรือใช้งานบน Tablet / PC
     </div>
     <iframe
       src="https://ndb.3xbun.com/nc/calendar/4c14a9bf-557a-4c69-8466-1fb1349e8eee?disableTopbar=true&disableToolbar=true&disableSidebar=true"
