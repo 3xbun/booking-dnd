@@ -1,18 +1,35 @@
 <template>
-  <div class="header">
-    <button @click="$emit('prev-month')">
-      <i class="fa-sharp fa-solid fa-chevron-left"></i>
-    </button>
-    <h2>
-      <i class="fa-sharp fa-solid fa-calendar-days"></i> {{ monthYear }}
+  <div class="header-nav">
+    <!-- Prev Month Button -->
+    <Button 
+      icon="fa-sharp fa-solid fa-chevron-left" 
+      severity="secondary" 
+      variant="outlined" 
+      @click="$emit('prev-month')"
+      class="nav-btn"
+      aria-label="ก่อนหน้า"
+    />
+    
+    <!-- Month/Year Display -->
+    <h2 class="month-title">
+      <i class="fa-sharp fa-solid fa-calendar-days text-primary"></i> {{ monthYear }}
     </h2>
-    <button @click="$emit('next-month')">
-      <i class="fa-sharp fa-solid fa-chevron-right"></i>
-    </button>
+    
+    <!-- Next Month Button -->
+    <Button 
+      icon="fa-sharp fa-solid fa-chevron-right" 
+      severity="secondary" 
+      variant="outlined" 
+      @click="$emit('next-month')"
+      class="nav-btn"
+      aria-label="ถัดไป"
+    />
   </div>
 </template>
 
 <script setup>
+import Button from "primevue/button";
+
 defineProps({
   monthYear: {
     type: String,
@@ -24,37 +41,42 @@ defineEmits(["prev-month", "next-month"]);
 </script>
 
 <style scoped>
-.header {
+.header-nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.9375rem 1.25rem;
-  background: linear-gradient(135deg, var(--primary), #ff6b6b);
-  color: var(--white);
+  padding: 1.25rem 1.5rem;
+  background: var(--dark-card);
+  border-bottom: 1px solid var(--dark-border);
 }
 
-.header h2 {
+.month-title {
   margin: 0;
-  font-size: 1.5em;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--white);
   display: flex;
   align-items: center;
   gap: 0.625rem;
 }
 
-.header button {
-  background: transparent;
-  border: 0.0625rem solid var(--white);
-  color: var(--white);
-  padding: 0.3125rem 0.625rem;
-  border-radius: 0.3125rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 2.5rem;
-  height: 2.5rem;
+.text-primary {
+  color: var(--primary) !important;
 }
 
-.header button:hover {
-  background: var(--white);
-  color: var(--primary);
+/* Nav Button overrides */
+.nav-btn {
+  width: 2.25rem !important;
+  height: 2.25rem !important;
+  border-color: var(--dark-border) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: var(--dark-text) !important;
+  border-radius: 0.5rem !important;
+}
+
+.nav-btn:hover {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: var(--white) !important;
 }
 </style>

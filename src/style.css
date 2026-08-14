@@ -32,6 +32,6 @@ body {
 .container {
   width: 95vw;
   max-width: 1200px;
-  height: 100vh;
+  min-height: 100vh;
   margin: auto;
 }
