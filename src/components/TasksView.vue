@@ -3,10 +3,10 @@
     <Card class="table-card">
       <template #content>
         <!-- PrimeVue DataTable -->
-        <DataTable 
-          :value="tasks" 
-          paginator 
-          :rows="10" 
+        <DataTable
+          :value="tasks"
+          paginator
+          :rows="10"
           :rowsPerPageOptions="[5, 10, 20, 50]"
           removableSort
           class="custom-table"
@@ -15,7 +15,7 @@
           <Column field="Date" header="วันที่" sortable style="width: 25%">
             <template #body="slotProps">
               <span class="table-date">
-                <i class="fa-sharp fa-solid fa-calendar-day icon-dim"></i> 
+                <i class="fa-sharp fa-solid fa-calendar-day icon-dim"></i>
                 {{ formatDate(slotProps.data.Date) }}
               </span>
             </template>
@@ -25,14 +25,19 @@
           <Column field="Time" header="เวลา" sortable style="width: 20%">
             <template #body="slotProps">
               <span class="table-time">
-                <i class="fa-sharp fa-solid fa-clock icon-dim"></i> 
+                <i class="fa-sharp fa-solid fa-clock icon-dim"></i>
                 {{ slotProps.data.Time }}
               </span>
             </template>
           </Column>
 
           <!-- Title/Booking Name Column -->
-          <Column field="Title" header="รายละเอียดการจอง" sortable style="width: 35%">
+          <Column
+            field="Title"
+            header="รายละเอียดการจอง"
+            sortable
+            style="width: 35%"
+          >
             <template #body="slotProps">
               <span class="table-title">{{ slotProps.data.Title }}</span>
             </template>
@@ -41,14 +46,14 @@
           <!-- Category/Type Column -->
           <Column header="ประเภท" style="width: 20%">
             <template #body="slotProps">
-              <Tag 
-                :value="getCategoryLabel(slotProps.data)" 
+              <Tag
+                :value="getCategoryLabel(slotProps.data)"
                 :severity="getCategorySeverity(slotProps.data)"
                 class="table-category-tag"
               />
             </template>
           </Column>
-          
+
           <!-- Empty State Layout -->
           <template #empty>
             <div class="table-empty-state">
@@ -88,6 +93,7 @@ const formatDate = (dateStr) => {
 const getCategoryLabel = (task) => {
   if (!task.Title) return "อื่นๆ";
   if (task.Title.includes("[SS")) return "Campaign";
+  if (task.Title.includes("[OS")) return "One Shot";
   if (task.Title.includes("Vacation")) return "วันหยุด";
   if (task.Title.includes("BGC")) return "Board Game";
   return "อื่นๆ";
@@ -96,10 +102,11 @@ const getCategoryLabel = (task) => {
 // Map category severity for color coding
 const getCategorySeverity = (task) => {
   if (!task.Title) return "secondary";
-  if (task.Title.includes("[SS")) return "info";       // Blue
-  if (task.Title.includes("Vacation")) return "warn";   // Orange
-  if (task.Title.includes("BGC")) return "success";     // Green
-  return "secondary";                                   // Gray
+  if (task.Title.includes("[SS")) return "info"; // Blue
+  if (task.Title.includes("[OS")) return "success"; // Teal/Green
+  if (task.Title.includes("Vacation")) return "warn"; // Orange
+  if (task.Title.includes("BGC")) return "danger"; // Red/Purple
+  return "secondary"; // Gray
 };
 </script>
 
@@ -175,7 +182,9 @@ const getCategorySeverity = (task) => {
 :deep(.p-paginator-rpp-select) {
   color: var(--dark-text-secondary) !important;
   border-radius: 0.375rem !important;
-  transition: background-color 0.2s, color 0.2s;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
 }
 
 :deep(.p-paginator .p-paginator-page:hover),
@@ -195,7 +204,8 @@ const getCategorySeverity = (task) => {
 }
 
 /* Table elements styling */
-.table-date, .table-time {
+.table-date,
+.table-time {
   display: flex;
   align-items: center;
   gap: 0.5rem;

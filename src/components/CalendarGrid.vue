@@ -6,13 +6,13 @@
         {{ translateDay(day) }}
       </div>
     </div>
-    
+
     <!-- Days Grid -->
     <div class="days-grid">
-      <div 
-        v-for="(day, index) in calendarGrid" 
-        :key="index" 
-        :class="['grid-cell', day.class, { 'clickable': day.date }]"
+      <div
+        v-for="(day, index) in calendarGrid"
+        :key="index"
+        :class="['grid-cell', day.class, { clickable: day.date }]"
         @click="day.date && $emit('select-day', day)"
       >
         <!-- Day Number Badge -->
@@ -21,19 +21,19 @@
             {{ day.day }}
           </span>
         </div>
-        
+
         <!-- List of Mini Tasks/Bookings (Max 2 shown) -->
         <div v-if="day.tasks && day.tasks.length > 0" class="cell-tasks-list">
-          <div 
-            v-for="task in day.tasks.slice(0, 2)" 
-            :key="task.Id" 
+          <div
+            v-for="task in day.tasks.slice(0, 2)"
+            :key="task.Id"
             :class="['mini-task-bar', getMiniTaskClass(task)]"
             :title="`${task.Time} - ${task.Title}`"
           >
             <span class="mini-task-time">{{ task.Time }}</span>
             <span class="mini-task-title">{{ task.Title }}</span>
           </div>
-          
+
           <!-- More items indicator -->
           <div v-if="day.tasks.length > 2" class="more-tasks-indicator">
             +{{ day.tasks.length - 2 }} รายการ...
@@ -69,13 +69,13 @@ const isToday = (day) => {
 // Translate Days of week to Thai if needed (otherwise return abbreviation)
 const translateDay = (day) => {
   const map = {
-    "Sun": "อา.",
-    "Mon": "จ.",
-    "Tue": "อ.",
-    "Wed": "พ.",
-    "Thu": "พฤ.",
-    "Fri": "ศ.",
-    "Sat": "ส."
+    Sun: "อา.",
+    Mon: "จ.",
+    Tue: "อ.",
+    Wed: "พ.",
+    Thu: "พฤ.",
+    Fri: "ศ.",
+    Sat: "ส.",
   };
   return map[day] || day;
 };
@@ -84,6 +84,7 @@ const translateDay = (day) => {
 const getMiniTaskClass = (task) => {
   if (!task.Title) return "mini-default";
   if (task.Title.includes("[SS")) return "mini-campaign";
+  if (task.Title.includes("[OS")) return "mini-oneshot";
   if (task.Title.includes("Vacation")) return "mini-vacation";
   if (task.Title.includes("BGC")) return "mini-bgc";
   return "mini-default";
@@ -116,7 +117,10 @@ const getMiniTaskClass = (task) => {
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: minmax(5.75rem, auto); /* Minimum height of 92px, grows if needed */
+  grid-auto-rows: minmax(
+    5.75rem,
+    auto
+  ); /* Minimum height of 92px, grows if needed */
   background: var(--dark-border);
   gap: 1px; /* Creates clean cell borders */
 }
@@ -128,7 +132,9 @@ const getMiniTaskClass = (task) => {
   justify-content: flex-start;
   align-items: stretch;
   padding: 0.45rem;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  transition:
+    background-color 0.2s,
+    box-shadow 0.2s;
   overflow: hidden;
 }
 
@@ -209,6 +215,12 @@ const getMiniTaskClass = (task) => {
   background: rgba(59, 130, 246, 0.12);
   color: #60a5fa;
   border-left: 2px solid #3b82f6;
+}
+
+.mini-oneshot {
+  background: rgba(20, 184, 166, 0.12);
+  color: #2dd4bf;
+  border-left: 2px solid #14b8a6;
 }
 
 .mini-vacation {

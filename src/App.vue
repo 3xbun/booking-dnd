@@ -62,6 +62,21 @@
           </template>
         </Card>
 
+        <!-- One Shot Sessions -->
+        <Card class="stat-card">
+          <template #content>
+            <div class="stat-content">
+              <div class="stat-info">
+                <span class="stat-label">One Shot Adventure</span>
+                <span class="stat-value text-teal">{{ oneShots }}</span>
+              </div>
+              <div class="stat-icon-wrapper bg-teal-dim">
+                <i class="fa-sharp fa-solid fa-dice-d20 text-teal"></i>
+              </div>
+            </div>
+          </template>
+        </Card>
+
         <!-- Vacation Days -->
         <Card class="stat-card">
           <template #content>
@@ -105,7 +120,7 @@
           </template>
         </Card>
       </section>
-      <br />
+
       <!-- View Controls & Filters -->
       <section class="controls-section">
         <Card class="controls-card">
@@ -206,6 +221,7 @@ const viewOptions = ref([
 const categoryOptions = ref([
   { label: "ทั้งหมด", value: "All" },
   { label: "Campaign", value: "Campaign" },
+  { label: "One Shot", value: "OneShot" },
   { label: "วันหยุด", value: "Vacation" },
   { label: "อื่นๆ", value: "Other" },
 ]);
@@ -244,6 +260,9 @@ const totalBookings = computed(() => Tasks.value.length);
 const campaignSessions = computed(
   () => Tasks.value.filter((t) => t.Title?.includes("[SS")).length,
 );
+const oneShots = computed(
+  () => Tasks.value.filter((t) => t.Title?.includes("[OS")).length,
+);
 const vacationDays = computed(
   () => Tasks.value.filter((t) => t.Title?.includes("Vacation")).length,
 );
@@ -269,10 +288,15 @@ const filteredTasks = computed(() => {
     // Category filter
     if (activeFilter.value === "All") return true;
     if (activeFilter.value === "Campaign") return task.Title?.includes("[SS");
+    if (activeFilter.value === "OneShot") return task.Title?.includes("[OS");
     if (activeFilter.value === "Vacation")
       return task.Title?.includes("Vacation");
     if (activeFilter.value === "Other")
-      return !task.Title?.includes("[SS") && !task.Title?.includes("Vacation");
+      return (
+        !task.Title?.includes("[SS") &&
+        !task.Title?.includes("[OS") &&
+        !task.Title?.includes("Vacation")
+      );
     return true;
   });
 });
@@ -357,7 +381,7 @@ const formatDate = (dateStr) => {
 /* KPI Stats */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
 
@@ -414,6 +438,13 @@ const formatDate = (dateStr) => {
 }
 .bg-blue-dim {
   background: rgba(59, 130, 246, 0.1);
+}
+
+.text-teal {
+  color: #14b8a6;
+}
+.bg-teal-dim {
+  background: rgba(20, 184, 166, 0.1);
 }
 
 .text-orange {
@@ -515,7 +546,7 @@ const formatDate = (dateStr) => {
     flex-direction: row;
     align-items: center;
     width: auto;
-    max-width: 70%;
+    max-width: 75%;
   }
 }
 
@@ -526,7 +557,7 @@ const formatDate = (dateStr) => {
 
 @media (min-width: 768px) {
   .search-box {
-    width: 250px;
+    width: 220px;
   }
 }
 
