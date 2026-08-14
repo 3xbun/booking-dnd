@@ -12,18 +12,22 @@
     </Card>
 
     <!-- Dialog for Day Details -->
-    <Dialog 
-      v-model:visible="displayDialog" 
-      modal 
-      :header="dialogHeader" 
+    <Dialog
+      v-model:visible="displayDialog"
+      modal
+      :header="dialogHeader"
       :style="{ width: '90vw', maxWidth: '440px' }"
       class="custom-dialog"
     >
       <div v-if="selectedDayTasks.length > 0" class="dialog-tasks-list">
-        <div v-for="task in selectedDayTasks" :key="task.Id" class="dialog-task-item">
+        <div
+          v-for="task in selectedDayTasks"
+          :key="task.Id"
+          class="dialog-task-item"
+        >
           <!-- Category Indicator Bar -->
           <div class="category-indicator" :class="getCategoryClass(task)"></div>
-          
+
           <div class="task-info-block">
             <div class="task-header-row">
               <span class="task-time">
@@ -38,12 +42,19 @@
         </div>
       </div>
       <div v-else class="dialog-empty-state">
-        <i class="fa-sharp fa-solid fa-calendar-circle-exclamation empty-icon"></i>
+        <i
+          class="fa-sharp fa-solid fa-calendar-circle-exclamation empty-icon"
+        ></i>
         <p>ไม่มีตารางงานหรือรายการจองในวันนี้</p>
       </div>
       <template #footer>
         <div class="dialog-footer">
-          <Button label="ปิดหน้าต่าง" icon="fa-sharp fa-solid fa-xmark" @click="displayDialog = false" class="p-button-text" />
+          <Button
+            label="ปิดหน้าต่าง"
+            icon="fa-sharp fa-solid fa-xmark"
+            @click="displayDialog = false"
+            class="p-button-text"
+          />
         </div>
       </template>
     </Dialog>
@@ -69,7 +80,7 @@ const props = defineProps({
   currentMonth: {
     type: Object, // dayjs object passed from parent (App.vue)
     required: true,
-  }
+  },
 });
 
 const today = dayjs();
@@ -95,14 +106,14 @@ const calendarGrid = computed(() => {
   for (let i = 1; i <= daysInMonth; i++) {
     const date = props.currentMonth.date(i);
     let cellClass = "day";
-    
+
     if (today.isSame(date, "day")) {
       cellClass += " today";
     }
 
     // Match tasks
     const dateStr = date.format("YYYY-MM-DD");
-    const dayTasks = props.tasks.filter(task => task.Date === dateStr);
+    const dayTasks = props.tasks.filter((task) => task.Date === dateStr);
 
     if (dayTasks.length > 0) {
       cellClass += " has-tasks";
@@ -137,7 +148,7 @@ const dialogHeader = computed(() => {
 const getCategoryClass = (task) => {
   if (!task.Title) return "cat-default";
   if (task.Title.includes("[SS")) return "cat-campaign";
-  if (task.Title.includes("[OC")) return "cat-oneshot";
+  if (task.Title.includes("[OS")) return "cat-oneshot";
   if (task.Title.includes("Vacation")) return "cat-vacation";
   if (task.Title.includes("BGC")) return "cat-bgc";
   return "cat-default";
@@ -146,7 +157,7 @@ const getCategoryClass = (task) => {
 const getCategoryLabel = (task) => {
   if (!task.Title) return "อื่นๆ";
   if (task.Title.includes("[SS")) return "Campaign";
-  if (task.Title.includes("[OC")) return "One Shot";
+  if (task.Title.includes("[OS")) return "One Shot";
   if (task.Title.includes("Vacation")) return "วันหยุด";
   if (task.Title.includes("BGC")) return "Board Game Club";
   return "อื่นๆ";
