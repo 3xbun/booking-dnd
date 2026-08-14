@@ -8,8 +8,7 @@
       <div class="header-text">
         <h1>ระบบจองคิวบอร์ดเกม & ตารางงาน</h1>
         <p class="subtitle">
-          <i class="fa-sharp fa-solid fa-circle-check text-success"></i>
-          ข้อมูลตารางงานอัปเดตเรียลไทม์สำหรับลูกค้า
+          <i class="fa-sharp fa-solid fa-circle-check text-success"></i> ข้อมูลตารางงานอัปเดตเรียลไทม์สำหรับลูกค้า
         </p>
       </div>
     </header>
@@ -23,21 +22,43 @@
     <!-- Error State -->
     <div v-else-if="error" class="error-container">
       <Message severity="error" life="5000">
-        <i class="fa-sharp fa-solid fa-triangle-exclamation"></i>
-        ไม่สามารถดึงข้อมูลตารางงานได้ กรุณาลองใหม่อีกครั้ง
+        <i class="fa-sharp fa-solid fa-triangle-exclamation"></i> ไม่สามารถดึงข้อมูลตารางงานได้ กรุณาลองใหม่อีกครั้ง
       </Message>
     </div>
 
     <!-- Dashboard Content -->
     <div v-else>
-      <!-- KPI Stats Grid -->
+      <!-- Month Navigation (Unified Top Level) -->
+      <section class="month-navigation-section">
+        <Card class="month-nav-card">
+          <template #content>
+            <div class="month-nav-wrapper">
+              <CalendarHeader
+                :month-year="monthYearLabel"
+                @prev-month="prevMonth"
+                @next-month="nextMonth"
+              />
+              <Button 
+                label="เดือนนี้" 
+                icon="fa-sharp fa-solid fa-calendar-day" 
+                severity="primary" 
+                variant="outlined" 
+                class="today-btn" 
+                @click="goToToday"
+              />
+            </div>
+          </template>
+        </Card>
+      </section>
+
+      <!-- KPI Stats Grid (Scoped to Selected Month) -->
       <section class="stats-grid">
-        <!-- Total Bookings -->
+        <!-- Total Bookings (This Month) -->
         <Card class="stat-card">
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">รายการจองทั้งหมด</span>
+                <span class="stat-label">รายการจองเดือนนี้</span>
                 <span class="stat-value text-red">{{ totalBookings }}</span>
               </div>
               <div class="stat-icon-wrapper bg-red-dim">
@@ -47,7 +68,7 @@
           </template>
         </Card>
 
-        <!-- Campaign Sessions -->
+        <!-- Campaign Sessions (This Month) -->
         <Card class="stat-card">
           <template #content>
             <div class="stat-content">
@@ -62,12 +83,12 @@
           </template>
         </Card>
 
-        <!-- One Shot Sessions -->
+        <!-- One Shot Sessions (This Month) -->
         <Card class="stat-card">
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">One Shot Adventure</span>
+                <span class="stat-label">วันช็อตแอดเวนเจอร์ (OC)</span>
                 <span class="stat-value text-teal">{{ oneShots }}</span>
               </div>
               <div class="stat-icon-wrapper bg-teal-dim">
@@ -77,12 +98,12 @@
           </template>
         </Card>
 
-        <!-- Vacation Days -->
+        <!-- Vacation Days (This Month) -->
         <Card class="stat-card">
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">วันหยุด / Vacation</span>
+                <span class="stat-label">วันหยุดเดือนนี้</span>
                 <span class="stat-value text-orange">{{ vacationDays }}</span>
               </div>
               <div class="stat-icon-wrapper bg-orange-dim">
@@ -92,25 +113,20 @@
           </template>
         </Card>
 
-        <!-- Next Session -->
+        <!-- Next Session (Chronological from Today) -->
         <Card class="stat-card next-session-card">
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">เซสชันถัดไป</span>
+                <span class="stat-label">เซสชันถัดไป (จากวันนี้)</span>
                 <template v-if="nextSession">
-                  <span class="next-session-title truncate">{{
-                    nextSession.Title
-                  }}</span>
+                  <span class="next-session-title truncate">{{ nextSession.Title }}</span>
                   <span class="next-session-date">
-                    <i class="fa-sharp fa-solid fa-clock"></i>
-                    {{ formatDate(nextSession.Date) }} ({{ nextSession.Time }})
+                    <i class="fa-sharp fa-solid fa-clock"></i> {{ formatDate(nextSession.Date) }} ({{ nextSession.Time }})
                   </span>
                 </template>
                 <template v-else>
-                  <span class="next-session-title text-secondary"
-                    >ไม่มีเซสชันเร็วๆ นี้</span
-                  >
+                  <span class="next-session-title text-secondary">ไม่มีเซสชันเร็วๆ นี้</span>
                 </template>
               </div>
               <div class="stat-icon-wrapper bg-green-dim">
@@ -128,11 +144,11 @@
             <div class="controls-wrapper">
               <!-- View Toggle (Calendar vs List) -->
               <div class="view-toggle-container">
-                <SelectButton
-                  v-model="currentView"
-                  :options="viewOptions"
-                  optionLabel="label"
-                  optionValue="value"
+                <SelectButton 
+                  v-model="currentView" 
+                  :options="viewOptions" 
+                  optionLabel="label" 
+                  optionValue="value" 
                   :allowEmpty="false"
                 />
               </div>
@@ -142,13 +158,11 @@
                 <!-- Search Box -->
                 <div class="search-box">
                   <span class="p-input-icon-left w-full">
-                    <i
-                      class="fa-sharp fa-solid fa-magnifying-glass search-icon"
-                    ></i>
-                    <input
-                      type="text"
-                      v-model="searchQuery"
-                      placeholder="ค้นหาชื่อตารางงาน..."
+                    <i class="fa-sharp fa-solid fa-magnifying-glass search-icon"></i>
+                    <input 
+                      type="text" 
+                      v-model="searchQuery" 
+                      placeholder="ค้นหาชื่อตารางงาน..." 
                       class="custom-search-input"
                     />
                   </span>
@@ -156,16 +170,11 @@
 
                 <!-- Category Pills -->
                 <div class="category-pills">
-                  <Button
-                    v-for="pill in categoryOptions"
+                  <Button 
+                    v-for="pill in categoryOptions" 
                     :key="pill.value"
                     :label="pill.label"
-                    :class="[
-                      'p-button-rounded p-button-sm',
-                      activeFilter === pill.value
-                        ? 'p-button-primary'
-                        : 'p-button-outlined p-button-secondary',
-                    ]"
+                    :class="['p-button-rounded p-button-sm', activeFilter === pill.value ? 'p-button-primary' : 'p-button-outlined p-button-secondary']"
                     @click="activeFilter = pill.value"
                   />
                 </div>
@@ -179,7 +188,7 @@
       <section class="main-view-container">
         <Transition name="fade" mode="out-in">
           <div v-if="currentView === 'calendar'" key="calendar">
-            <CalendarView :tasks="filteredTasks" />
+            <CalendarView :tasks="filteredTasks" :current-month="currentDate" />
           </div>
           <div v-else key="list">
             <TasksView :tasks="filteredTasks" />
@@ -201,6 +210,7 @@ import Button from "primevue/button";
 import SelectButton from "primevue/selectbutton";
 import Message from "primevue/message";
 
+import CalendarHeader from "./components/CalendarHeader.vue";
 import CalendarView from "./components/CalendarView.vue";
 import TasksView from "./components/TasksView.vue";
 
@@ -212,18 +222,37 @@ const currentView = ref("calendar");
 const searchQuery = ref("");
 const activeFilter = ref("All");
 
+// Monthly navigation lifted to App level
+const currentDate = ref(dayjs());
+
+const prevMonth = () => {
+  currentDate.value = currentDate.value.subtract(1, "month");
+};
+
+const nextMonth = () => {
+  currentDate.value = currentDate.value.add(1, "month");
+};
+
+const goToToday = () => {
+  currentDate.value = dayjs();
+};
+
+const monthYearLabel = computed(() => {
+  return currentDate.value.locale("th").format("MMMM YYYY");
+});
+
 // Dropdown/Toggle Options
 const viewOptions = ref([
   { label: "ตารางปฏิทิน", value: "calendar" },
-  { label: "รายการทั้งหมด", value: "list" },
+  { label: "รายการทั้งหมด", value: "list" }
 ]);
 
 const categoryOptions = ref([
   { label: "ทั้งหมด", value: "All" },
-  { label: "Campaign", value: "Campaign" },
-  { label: "One Shot", value: "OneShot" },
+  { label: "Campaign SS", value: "Campaign" },
+  { label: "One Shot OC", value: "OneShot" },
   { label: "วันหยุด", value: "Vacation" },
-  { label: "อื่นๆ", value: "Other" },
+  { label: "อื่นๆ", value: "Other" }
 ]);
 
 // Fetching Data
@@ -231,12 +260,7 @@ onMounted(() => {
   const options = {
     method: "GET",
     url: "https://ndb.3xbun.com/api/v2/tables/mrsyc7z6ooyi7ad/records",
-    params: {
-      offset: "0",
-      limit: "150",
-      where: "",
-      viewId: "vwyaz6okcvlatosq",
-    },
+    params: { offset: "0", limit: "150", where: "", viewId: "vwyaz6okcvlatosq" },
     headers: {
       "xc-token": import.meta.env.VITE_NDB_API,
     },
@@ -255,48 +279,42 @@ onMounted(() => {
     });
 });
 
-// Computed Properties for KPIs
-const totalBookings = computed(() => Tasks.value.length);
-const campaignSessions = computed(
-  () => Tasks.value.filter((t) => t.Title?.includes("[SS")).length,
-);
-const oneShots = computed(
-  () => Tasks.value.filter((t) => t.Title?.includes("[OS")).length,
-);
-const vacationDays = computed(
-  () => Tasks.value.filter((t) => t.Title?.includes("Vacation")).length,
-);
+// Filter tasks to ONLY include the currently active calendar month
+const currentMonthTasks = computed(() => {
+  return Tasks.value.filter(task => {
+    if (!task.Date) return false;
+    return dayjs(task.Date).isSame(currentDate.value, "month");
+  });
+});
 
+// Computed Properties for KPIs (Strictly scoped to selected month, except Next Session)
+const totalBookings = computed(() => currentMonthTasks.value.length);
+const campaignSessions = computed(() => currentMonthTasks.value.filter(t => t.Title?.includes("[SS")).length);
+const oneShots = computed(() => currentMonthTasks.value.filter(t => t.Title?.includes("[OC")).length);
+const vacationDays = computed(() => currentMonthTasks.value.filter(t => t.Title?.includes("Vacation")).length);
+
+// Next session is chronological from TODAY
 const nextSession = computed(() => {
   const todayStr = dayjs().format("YYYY-MM-DD");
   const upcoming = Tasks.value
-    .filter((t) => t.Date >= todayStr && !t.Title?.includes("Vacation"))
+    .filter(t => t.Date >= todayStr && !t.Title?.includes("Vacation"))
     .sort((a, b) => a.Date.localeCompare(b.Date));
   return upcoming.length > 0 ? upcoming[0] : null;
 });
 
-// Computed Filtered Tasks
+// Computed Filtered Tasks (drawn from current month tasks only!)
 const filteredTasks = computed(() => {
-  return Tasks.value.filter((task) => {
+  return currentMonthTasks.value.filter(task => {
     // Search filter
-    const matchesSearch =
-      !searchQuery.value ||
-      (task.Title &&
-        task.Title.toLowerCase().includes(searchQuery.value.toLowerCase()));
+    const matchesSearch = !searchQuery.value || (task.Title && task.Title.toLowerCase().includes(searchQuery.value.toLowerCase()));
     if (!matchesSearch) return false;
-
+    
     // Category filter
     if (activeFilter.value === "All") return true;
     if (activeFilter.value === "Campaign") return task.Title?.includes("[SS");
-    if (activeFilter.value === "OneShot") return task.Title?.includes("[OS");
-    if (activeFilter.value === "Vacation")
-      return task.Title?.includes("Vacation");
-    if (activeFilter.value === "Other")
-      return (
-        !task.Title?.includes("[SS") &&
-        !task.Title?.includes("[OS") &&
-        !task.Title?.includes("Vacation")
-      );
+    if (activeFilter.value === "OneShot") return task.Title?.includes("[OC");
+    if (activeFilter.value === "Vacation") return task.Title?.includes("Vacation");
+    if (activeFilter.value === "Other") return !task.Title?.includes("[SS") && !task.Title?.includes("[OC") && !task.Title?.includes("Vacation");
     return true;
   });
 });
@@ -358,6 +376,61 @@ const formatDate = (dateStr) => {
   color: #10b981;
 }
 
+/* Month Navigation styling overrides */
+.month-navigation-section {
+  margin-bottom: -0.5rem;
+}
+
+.month-nav-card {
+  background: var(--dark-card) !important;
+  border: 1px solid var(--dark-border) !important;
+  border-radius: 1rem !important;
+}
+
+.month-nav-card :deep(.p-card-body) {
+  padding: 0 !important;
+}
+
+.month-nav-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+@media (min-width: 640px) {
+  .month-nav-wrapper {
+    flex-direction: row;
+    padding: 0.5rem 1.5rem;
+  }
+}
+
+.month-nav-wrapper :deep(.header-nav) {
+  border-bottom: none !important;
+  flex-grow: 1;
+  width: 100%;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.today-btn {
+  height: 2.25rem !important;
+  border-color: var(--dark-border) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  color: var(--dark-text) !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.85rem !important;
+  padding: 0.4rem 1rem !important;
+}
+
+.today-btn:hover {
+  border-color: var(--primary) !important;
+  background: rgba(220, 39, 44, 0.05) !important;
+  color: var(--white) !important;
+}
+
 /* Loading & Error */
 .loading-container {
   display: flex;
@@ -390,9 +463,7 @@ const formatDate = (dateStr) => {
   border: 1px solid var(--dark-border) !important;
   border-radius: 1rem !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-  transition:
-    transform 0.2s,
-    border-color 0.2s;
+  transition: transform 0.2s, border-color 0.2s;
 }
 
 .stat-card:hover {
@@ -426,40 +497,20 @@ const formatDate = (dateStr) => {
 }
 
 /* KPI Colors */
-.text-red {
-  color: #ef4444;
-}
-.bg-red-dim {
-  background: rgba(239, 68, 68, 0.1);
-}
+.text-red { color: #ef4444; }
+.bg-red-dim { background: rgba(239, 68, 68, 0.1); }
 
-.text-blue {
-  color: #3b82f6;
-}
-.bg-blue-dim {
-  background: rgba(59, 130, 246, 0.1);
-}
+.text-blue { color: #3b82f6; }
+.bg-blue-dim { background: rgba(59, 130, 246, 0.1); }
 
-.text-teal {
-  color: #14b8a6;
-}
-.bg-teal-dim {
-  background: rgba(20, 184, 166, 0.1);
-}
+.text-teal { color: #14b8a6; }
+.bg-teal-dim { background: rgba(20, 184, 166, 0.1); }
 
-.text-orange {
-  color: #f59e0b;
-}
-.bg-orange-dim {
-  background: rgba(245, 158, 11, 0.1);
-}
+.text-orange { color: #f59e0b; }
+.bg-orange-dim { background: rgba(245, 158, 11, 0.1); }
 
-.text-green {
-  color: #10b981;
-}
-.bg-green-dim {
-  background: rgba(16, 185, 129, 0.1);
-}
+.text-green { color: #10b981; }
+.bg-green-dim { background: rgba(16, 185, 129, 0.1); }
 
 .stat-icon-wrapper {
   width: 3.25rem;
@@ -584,9 +635,7 @@ const formatDate = (dateStr) => {
   border-radius: 0.5rem;
   outline: none;
   font-size: 0.9rem;
-  transition:
-    border-color 0.2s,
-    box-shadow 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .custom-search-input:focus {
