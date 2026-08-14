@@ -29,6 +29,14 @@ body {
   color: var(--dark-text);
 }
 
+input {
+  font-family: inherit;
+}
+
+section {
+  margin: 1.5em 0;
+}
+
 .container {
   width: 95vw;
   max-width: 1200px;
