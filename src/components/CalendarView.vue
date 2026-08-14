@@ -19,35 +19,39 @@
       :style="{ width: '90vw', maxWidth: '440px' }"
       class="custom-dialog"
     >
-      <div v-if="selectedDayTasks.length > 0" class="dialog-tasks-list">
-        <div
-          v-for="task in selectedDayTasks"
-          :key="task.Id"
-          class="dialog-task-item"
-        >
-          <!-- Category Indicator Bar -->
-          <div class="category-indicator" :class="getCategoryClass(task)"></div>
+      <template #container>
+        <div v-if="selectedDayTasks.length > 0" class="dialog-tasks-list">
+          <div
+            v-for="task in selectedDayTasks"
+            :key="task.Id"
+            class="dialog-task-item"
+          >
+            <!-- Category Indicator Bar -->
+            <div
+              class="category-indicator"
+              :class="getCategoryClass(task)"
+            ></div>
 
-          <div class="task-info-block">
-            <div class="task-header-row">
-              <span class="task-time">
-                <i class="fa-sharp fa-solid fa-clock"></i> {{ task.Time }}
-              </span>
-              <span class="task-badge" :class="getCategoryClass(task)">
-                {{ getCategoryLabel(task) }}
-              </span>
+            <div class="task-info-block">
+              <div class="task-header-row">
+                <span class="task-time">
+                  <i class="fa-sharp fa-solid fa-clock"></i> {{ task.Time }}
+                </span>
+                <span class="task-badge" :class="getCategoryClass(task)">
+                  {{ getCategoryLabel(task) }}
+                </span>
+              </div>
+              <h4 class="task-title">{{ task.Title }}</h4>
             </div>
-            <h4 class="task-title">{{ task.Title }}</h4>
           </div>
         </div>
-      </div>
-      <div v-else class="dialog-empty-state">
-        <i
-          class="fa-sharp fa-solid fa-calendar-circle-exclamation empty-icon"
-        ></i>
-        <p>ไม่มีตารางงานหรือรายการจองในวันนี้</p>
-      </div>
-      <template #footer>
+        <div v-else class="dialog-empty-state">
+          <i
+            class="fa-sharp fa-solid fa-calendar-circle-exclamation empty-icon"
+          ></i>
+          <p>ไม่มีตารางงานหรือรายการจองในวันนี้</p>
+        </div>
+
         <div class="dialog-footer">
           <Button
             label="ปิดหน้าต่าง"
@@ -213,6 +217,7 @@ const getCategoryLabel = (task) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  padding: 1em;
 }
 
 .dialog-task-item {
@@ -339,7 +344,8 @@ div.category-indicator.cat-default {
 
 .dialog-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  margin-bottom: 0.5em;
   width: 100%;
 }
 </style>

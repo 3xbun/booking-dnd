@@ -445,7 +445,7 @@ const formatDate = (dateStr) => {
 .month-nav-wrapper :deep(.header-nav) {
   border-bottom: none !important;
   flex-grow: 1;
-  width: 100%;
+  width: 50%;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
@@ -489,8 +489,9 @@ const formatDate = (dateStr) => {
 /* KPI Stats */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: 1rem;
+  width: 100%;
 }
 
 .stat-card {
@@ -501,6 +502,9 @@ const formatDate = (dateStr) => {
   transition:
     transform 0.2s,
     border-color 0.2s;
+  min-width: 0;
+  width: 100%;
+  overflow: hidden;
 }
 
 .stat-card:hover {
@@ -508,10 +512,20 @@ const formatDate = (dateStr) => {
   border-color: rgba(255, 255, 255, 0.15) !important;
 }
 
+.stat-card :deep(.p-card-body) {
+  padding: 1rem !important;
+}
+
+.stat-card :deep(.p-card-content) {
+  padding: 0 !important;
+}
+
 .stat-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+  min-width: 0;
 }
 
 .stat-info {
@@ -519,6 +533,7 @@ const formatDate = (dateStr) => {
   flex-direction: column;
   gap: 0.25rem;
   overflow: hidden;
+  min-width: 0;
 }
 
 .stat-label {
@@ -580,15 +595,9 @@ const formatDate = (dateStr) => {
   flex-shrink: 0;
 }
 
-/* Next Session Specifics */
+/* Next Session Specifics & Responsive Grid Adjustments */
 .next-session-card {
   grid-column: span 1;
-}
-
-@media (min-width: 1024px) {
-  .next-session-card {
-    grid-column: span 1;
-  }
 }
 
 .next-session-title {
@@ -609,6 +618,36 @@ const formatDate = (dateStr) => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (min-width: 480px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .next-session-card {
+    grid-column: span 2;
+  }
+  .stat-card :deep(.p-card-body) {
+    padding: 1.25rem !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .next-session-card {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .next-session-card {
+    grid-column: span 1;
+  }
 }
 
 /* Controls & Filters */
