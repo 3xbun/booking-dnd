@@ -2,7 +2,7 @@
   <div class="header-nav">
     <!-- Prev Month Button -->
     <Button 
-      icon="fa-sharp fa-solid fa-chevron-left" 
+      icon="fa-duotone fa-solid fa-chevron-left" 
       severity="secondary" 
       variant="outlined" 
       @click="$emit('prev-month')"
@@ -12,12 +12,12 @@
     
     <!-- Month/Year Display -->
     <h2 class="month-title">
-      <i class="fa-sharp fa-solid fa-calendar-days text-primary"></i> {{ monthYear }}
+      <i class="fa-duotone fa-solid fa-calendar-days text-primary"></i> {{ monthYear }}
     </h2>
     
     <!-- Next Month Button -->
     <Button 
-      icon="fa-sharp fa-solid fa-chevron-right" 
+      icon="fa-duotone fa-solid fa-chevron-right" 
       severity="secondary" 
       variant="outlined" 
       @click="$emit('next-month')"

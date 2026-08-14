@@ -8,7 +8,7 @@
       <div class="header-text">
         <h1>ระบบจองคิวบอร์ดเกม & ตารางงาน</h1>
         <p class="subtitle">
-          <i class="fa-sharp fa-solid fa-circle-check text-success"></i>
+          <i class="fa-duotone fa-solid fa-circle-check text-success"></i>
           ข้อมูลตารางงานอัปเดตเรียลไทม์สำหรับลูกค้า
         </p>
       </div>
@@ -16,14 +16,14 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="loading-container">
-      <i class="fa-sharp fa-solid fa-spinner fa-spin loading-icon"></i>
+      <i class="fa-duotone fa-solid fa-spinner fa-spin loading-icon"></i>
       <p>กำลังโหลดข้อมูลตารางงาน...</p>
     </div>
 
     <!-- Error State -->
     <div v-else-if="error" class="error-container">
       <Message severity="error" life="5000">
-        <i class="fa-sharp fa-solid fa-triangle-exclamation"></i>
+        <i class="fa-duotone fa-solid fa-triangle-exclamation"></i>
         ไม่สามารถดึงข้อมูลตารางงานได้ กรุณาลองใหม่อีกครั้ง
       </Message>
     </div>
@@ -42,7 +42,7 @@
               />
               <Button
                 label="เดือนนี้"
-                icon="fa-sharp fa-solid fa-calendar-day"
+                icon="fa-duotone fa-solid fa-calendar-day"
                 severity="primary"
                 variant="outlined"
                 class="today-btn"
@@ -64,7 +64,7 @@
                 <span class="stat-value text-red">{{ totalBookings }}</span>
               </div>
               <div class="stat-icon-wrapper bg-red-dim">
-                <i class="fa-sharp fa-solid fa-calendar-days text-red"></i>
+                <i class="fa-duotone fa-solid fa-calendar-days text-red"></i>
               </div>
             </div>
           </template>
@@ -75,11 +75,11 @@
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">แคมเปญเซสชัน (SS)</span>
+                <span class="stat-label">Campaigns</span>
                 <span class="stat-value text-blue">{{ campaignSessions }}</span>
               </div>
               <div class="stat-icon-wrapper bg-blue-dim">
-                <i class="fa-sharp fa-solid fa-shield-halved text-blue"></i>
+                <i class="fa-duotone fa-solid fa-shield-halved text-blue"></i>
               </div>
             </div>
           </template>
@@ -90,11 +90,11 @@
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">วันช็อตแอดเวนเจอร์ (OC)</span>
+                <span class="stat-label">One Shots</span>
                 <span class="stat-value text-teal">{{ oneShots }}</span>
               </div>
               <div class="stat-icon-wrapper bg-teal-dim">
-                <i class="fa-sharp fa-solid fa-dice-d20 text-teal"></i>
+                <i class="fa-duotone fa-solid fa-dice-d20 text-teal"></i>
               </div>
             </div>
           </template>
@@ -109,7 +109,9 @@
                 <span class="stat-value text-orange">{{ vacationDays }}</span>
               </div>
               <div class="stat-icon-wrapper bg-orange-dim">
-                <i class="fa-sharp fa-solid fa-umbrella-beach text-orange"></i>
+                <i
+                  class="fa-duotone fa-solid fa-umbrella-beach text-orange"
+                ></i>
               </div>
             </div>
           </template>
@@ -125,10 +127,6 @@
                   <span class="next-session-title truncate">{{
                     nextSession.Title
                   }}</span>
-                  <span class="next-session-date">
-                    <i class="fa-sharp fa-solid fa-clock"></i>
-                    {{ formatDate(nextSession.Date) }} ({{ nextSession.Time }})
-                  </span>
                 </template>
                 <template v-else>
                   <span class="next-session-title text-secondary"
@@ -137,7 +135,9 @@
                 </template>
               </div>
               <div class="stat-icon-wrapper bg-green-dim">
-                <i class="fa-sharp fa-solid fa-hourglass-start text-green"></i>
+                <i
+                  class="fa-duotone fa-solid fa-hourglass-start text-green"
+                ></i>
               </div>
             </div>
           </template>
@@ -166,7 +166,7 @@
                 <div class="search-box">
                   <span class="p-input-icon-left w-full">
                     <i
-                      class="fa-sharp fa-solid fa-magnifying-glass search-icon"
+                      class="fa-duotone fa-solid fa-magnifying-glass search-icon"
                     ></i>
                     <input
                       type="text"
@@ -263,8 +263,8 @@ const viewOptions = ref([
 
 const categoryOptions = ref([
   { label: "ทั้งหมด", value: "All" },
-  { label: "Campaign SS", value: "Campaign" },
-  { label: "One Shot OS", value: "OneShot" },
+  { label: "Campaign", value: "Campaign" },
+  { label: "One Shot", value: "OneShot" },
   { label: "วันหยุด", value: "Vacation" },
   { label: "อื่นๆ", value: "Other" },
 ]);

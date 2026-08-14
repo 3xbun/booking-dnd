@@ -35,7 +35,7 @@
             <div class="task-info-block">
               <div class="task-header-row">
                 <span class="task-time">
-                  <i class="fa-sharp fa-solid fa-clock"></i> {{ task.Time }}
+                  <i class="fa-duotone fa-solid fa-clock"></i> {{ task.Time }}
                 </span>
                 <span class="task-badge" :class="getCategoryClass(task)">
                   {{ getCategoryLabel(task) }}
@@ -47,7 +47,7 @@
         </div>
         <div v-else class="dialog-empty-state">
           <i
-            class="fa-sharp fa-solid fa-calendar-circle-exclamation empty-icon"
+            class="fa-duotone fa-solid fa-calendar-circle-exclamation empty-icon"
           ></i>
           <p>ไม่มีตารางงานหรือรายการจองในวันนี้</p>
         </div>
@@ -55,7 +55,7 @@
         <div class="dialog-footer">
           <Button
             label="ปิดหน้าต่าง"
-            icon="fa-sharp fa-solid fa-xmark"
+            icon="fa-duotone fa-solid fa-xmark"
             @click="displayDialog = false"
             class="p-button-text"
           />

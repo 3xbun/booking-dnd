@@ -15,7 +15,7 @@
           <Column field="Date" header="วันที่" sortable style="width: 25%">
             <template #body="slotProps">
               <span class="table-date">
-                <i class="fa-sharp fa-solid fa-calendar-day icon-dim"></i>
+                <i class="fa-duotone fa-solid fa-calendar-day icon-dim"></i>
                 {{ formatDate(slotProps.data.Date) }}
               </span>
             </template>
@@ -25,7 +25,7 @@
           <Column field="Time" header="เวลา" sortable style="width: 20%">
             <template #body="slotProps">
               <span class="table-time">
-                <i class="fa-sharp fa-solid fa-clock icon-dim"></i>
+                <i class="fa-duotone fa-solid fa-clock icon-dim"></i>
                 {{ slotProps.data.Time }}
               </span>
             </template>
@@ -57,7 +57,7 @@
           <!-- Empty State Layout -->
           <template #empty>
             <div class="table-empty-state">
-              <i class="fa-sharp fa-solid fa-magnifying-glass empty-icon"></i>
+              <i class="fa-duotone fa-solid fa-magnifying-glass empty-icon"></i>
               <p>ไม่พบข้อมูลรายการจองในระบบ</p>
             </div>
           </template>
