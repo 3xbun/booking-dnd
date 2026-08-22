@@ -94,15 +94,17 @@ const displayDialog = ref(false);
 const selectedDay = ref(null);
 const selectedDayTasks = ref([]);
 
-const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const daysOfWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 const calendarGrid = computed(() => {
   const firstDayOfMonth = props.currentMonth.startOf("month").day();
+  // Adjust padding since the week starts on Monday (Sunday is 0 in dayjs)
+  const paddingDays = (firstDayOfMonth + 6) % 7;
   const daysInMonth = props.currentMonth.daysInMonth();
   const grid = [];
 
   // Pad the start of the grid with empty days
-  for (let i = 0; i < firstDayOfMonth; i++) {
+  for (let i = 0; i < paddingDays; i++) {
     grid.push({ date: null, day: "", class: "empty", tasks: [] });
   }
 

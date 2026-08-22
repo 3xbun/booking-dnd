@@ -69,13 +69,13 @@ const isToday = (day) => {
 // Translate Days of week to Thai if needed (otherwise return abbreviation)
 const translateDay = (day) => {
   const map = {
-    Sun: "อา.",
     Mon: "จ.",
     Tue: "อ.",
     Wed: "พ.",
     Thu: "พฤ.",
     Fri: "ศ.",
     Sat: "ส.",
+    Sun: "อา.",
   };
   return map[day] || day;
 };
