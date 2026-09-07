@@ -6,25 +6,25 @@
         <img class="logo" src="/logo.png" alt="logo" />
       </div>
       <div class="header-text">
-        <h1>ระบบจองคิวบอร์ดเกม & ตารางงาน</h1>
+        <h1>Board Game Booking & Schedule System</h1>
         <p class="subtitle">
-          <i class="fa-duotone fa-solid fa-circle-check text-success"></i>
-          ข้อมูลตารางงานอัปเดตเรียลไทม์สำหรับลูกค้า
+          <i class="fa-pixel fa-solid fa-circle-check text-success"></i>
+          Real-time schedule data for customers
         </p>
       </div>
     </header>
 
     <!-- Loading State -->
     <div v-if="loading" class="loading-container">
-      <i class="fa-duotone fa-solid fa-spinner fa-spin loading-icon"></i>
-      <p>กำลังโหลดข้อมูลตารางงาน...</p>
+      <i class="fa-pixel fa-regular fa-arrows-rotate fa-spin"></i>
+      <p>Loading schedule data...</p>
     </div>
 
     <!-- Error State -->
     <div v-else-if="error" class="error-container">
       <Message severity="error" life="5000">
-        <i class="fa-duotone fa-solid fa-triangle-exclamation"></i>
-        ไม่สามารถดึงข้อมูลตารางงานได้ กรุณาลองใหม่อีกครั้ง
+        <i class="fa-pixel fa-solid fa-triangle-exclamation"></i>
+        Unable to load schedule data. Please try again.
       </Message>
     </div>
 
@@ -41,8 +41,8 @@
                 @next-month="nextMonth"
               />
               <Button
-                label="เดือนนี้"
-                icon="fa-duotone fa-solid fa-calendar-day"
+                label="This Month"
+                icon="fa-pixel fa-solid fa-calendar"
                 severity="primary"
                 variant="outlined"
                 class="today-btn"
@@ -60,11 +60,11 @@
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">รายการจองเดือนนี้</span>
+                <span class="stat-label">Bookings This Month</span>
                 <span class="stat-value text-red">{{ totalBookings }}</span>
               </div>
               <div class="stat-icon-wrapper bg-red-dim">
-                <i class="fa-duotone fa-solid fa-calendar-days text-red"></i>
+                <i class="fa-pixel fa-solid fa-calendar text-red"></i>
               </div>
             </div>
           </template>
@@ -79,7 +79,7 @@
                 <span class="stat-value text-blue">{{ campaignSessions }}</span>
               </div>
               <div class="stat-icon-wrapper bg-blue-dim">
-                <i class="fa-duotone fa-solid fa-shield-halved text-blue"></i>
+                <i class="fa-pixel fa-solid fa-shield text-blue"></i>
               </div>
             </div>
           </template>
@@ -94,7 +94,7 @@
                 <span class="stat-value text-teal">{{ oneShots }}</span>
               </div>
               <div class="stat-icon-wrapper bg-teal-dim">
-                <i class="fa-duotone fa-solid fa-dice-d20 text-teal"></i>
+                <i class="fa-pixel fa-solid fa-coin-vertical text-teal"></i>
               </div>
             </div>
           </template>
@@ -105,12 +105,12 @@
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">วันหยุดเดือนนี้</span>
+                <span class="stat-label">Vacation Days This Month</span>
                 <span class="stat-value text-orange">{{ vacationDays }}</span>
               </div>
               <div class="stat-icon-wrapper bg-orange-dim">
                 <i
-                  class="fa-duotone fa-solid fa-umbrella-beach text-orange"
+                  class="fa-pixel fa-solid fa-umbrella text-orange"
                 ></i>
               </div>
             </div>
@@ -122,7 +122,7 @@
           <template #content>
             <div class="stat-content">
               <div class="stat-info">
-                <span class="stat-label">เซสชันถัดไป (จากวันนี้)</span>
+                <span class="stat-label">Next Session (from today)</span>
                 <template v-if="nextSession">
                   <span class="next-session-title truncate">{{
                     nextSession.Title
@@ -130,13 +130,13 @@
                 </template>
                 <template v-else>
                   <span class="next-session-title text-secondary"
-                    >ไม่มีเซสชันเร็วๆ นี้</span
+                    >No upcoming sessions</span
                   >
                 </template>
               </div>
               <div class="stat-icon-wrapper bg-green-dim">
                 <i
-                  class="fa-duotone fa-solid fa-hourglass-start text-green"
+                  class="fa-pixel fa-solid fa-hourglass text-green"
                 ></i>
               </div>
             </div>
@@ -166,12 +166,12 @@
                 <div class="search-box">
                   <span class="p-input-icon-left w-full">
                     <i
-                      class="fa-duotone fa-solid fa-magnifying-glass search-icon"
+                      class="fa-pixel fa-solid fa-magnifying-glass search-icon"
                     ></i>
                     <input
                       type="text"
                       v-model="searchQuery"
-                      placeholder="ค้นหาชื่อตารางงาน..."
+                      placeholder="Search schedule name..."
                       class="custom-search-input"
                     />
                   </span>
@@ -217,7 +217,6 @@
 import { computed, onMounted, ref } from "vue";
 import axios from "axios";
 import dayjs from "dayjs";
-import "dayjs/locale/th"; // For Thai dates if needed
 
 import Card from "primevue/card";
 import Button from "primevue/button";
@@ -252,21 +251,21 @@ const goToToday = () => {
 };
 
 const monthYearLabel = computed(() => {
-  return currentDate.value.locale("th").format("MMMM YYYY");
+  return currentDate.value.locale("en").format("MMMM YYYY");
 });
 
 // Dropdown/Toggle Options
 const viewOptions = ref([
-  { label: "ตารางปฏิทิน", value: "calendar" },
-  { label: "รายการทั้งหมด", value: "list" },
+  { label: "Calendar", value: "calendar" },
+  { label: "All Items", value: "list" },
 ]);
 
 const categoryOptions = ref([
-  { label: "ทั้งหมด", value: "All" },
+  { label: "All", value: "All" },
   { label: "Campaign", value: "Campaign" },
   { label: "One Shot", value: "OneShot" },
-  { label: "วันหยุด", value: "Vacation" },
-  { label: "อื่นๆ", value: "Other" },
+  { label: "Vacation", value: "Vacation" },
+  { label: "Other", value: "Other" },
 ]);
 
 // Fetching Data
@@ -357,7 +356,7 @@ const filteredTasks = computed(() => {
 // Format Dates beautifully
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
-  return dayjs(dateStr).locale("th").format("D MMM YYYY");
+  return dayjs(dateStr).locale("en").format("D MMM YYYY");
 };
 </script>
 

@@ -36,7 +36,7 @@
 
           <!-- More items indicator -->
           <div v-if="day.tasks.length > 2" class="more-tasks-indicator">
-            +{{ day.tasks.length - 2 }} รายการ...
+            +{{ day.tasks.length - 2 }} more...
           </div>
         </div>
       </div>
@@ -66,16 +66,16 @@ const isToday = (day) => {
   return dayjs().isSame(day.date, "day");
 };
 
-// Translate Days of week to Thai if needed (otherwise return abbreviation)
+// Translate Days of week (returns abbreviation)
 const translateDay = (day) => {
   const map = {
-    Mon: "จ.",
-    Tue: "อ.",
-    Wed: "พ.",
-    Thu: "พฤ.",
-    Fri: "ศ.",
-    Sat: "ส.",
-    Sun: "อา.",
+    Mon: "Mon",
+    Tue: "Tue",
+    Wed: "Wed",
+    Thu: "Thu",
+    Fri: "Fri",
+    Sat: "Sat",
+    Sun: "Sun",
   };
   return map[day] || day;
 };

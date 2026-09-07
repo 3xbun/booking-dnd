@@ -12,20 +12,20 @@
           class="custom-table"
         >
           <!-- Date Column -->
-          <Column field="Date" header="วันที่" sortable style="width: 25%">
+          <Column field="Date" header="Date" sortable style="width: 25%">
             <template #body="slotProps">
               <span class="table-date">
-                <i class="fa-duotone fa-solid fa-calendar-day icon-dim"></i>
+                <i class="fa-pixel fa-solid fa-calendar icon-dim"></i>
                 {{ formatDate(slotProps.data.Date) }}
               </span>
             </template>
           </Column>
 
           <!-- Time Column -->
-          <Column field="Time" header="เวลา" sortable style="width: 20%">
+          <Column field="Time" header="Time" sortable style="width: 20%">
             <template #body="slotProps">
               <span class="table-time">
-                <i class="fa-duotone fa-solid fa-clock icon-dim"></i>
+                <i class="fa-pixel fa-solid fa-clock icon-dim"></i>
                 {{ slotProps.data.Time }}
               </span>
             </template>
@@ -34,7 +34,7 @@
           <!-- Title/Booking Name Column -->
           <Column
             field="Title"
-            header="รายละเอียดการจอง"
+            header="Booking Details"
             sortable
             style="width: 35%"
           >
@@ -44,7 +44,7 @@
           </Column>
 
           <!-- Category/Type Column -->
-          <Column header="ประเภท" style="width: 20%">
+          <Column header="Category" style="width: 20%">
             <template #body="slotProps">
               <Tag
                 :value="getCategoryLabel(slotProps.data)"
@@ -57,8 +57,8 @@
           <!-- Empty State Layout -->
           <template #empty>
             <div class="table-empty-state">
-              <i class="fa-duotone fa-solid fa-magnifying-glass empty-icon"></i>
-              <p>ไม่พบข้อมูลรายการจองในระบบ</p>
+              <i class="fa-pixel fa-solid fa-magnifying-glass empty-icon"></i>
+              <p>No booking records found in the system</p>
             </div>
           </template>
         </DataTable>
@@ -69,7 +69,6 @@
 
 <script setup>
 import dayjs from "dayjs";
-import "dayjs/locale/th";
 
 import Card from "primevue/card";
 import DataTable from "primevue/datatable";
@@ -86,17 +85,17 @@ defineProps({
 // Format Date to Thai local format
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
-  return dayjs(dateStr).locale("th").format("D MMMM YYYY");
+  return dayjs(dateStr).format("D MMMM YYYY");
 };
 
 // Help map category labels
 const getCategoryLabel = (task) => {
-  if (!task.Title) return "อื่นๆ";
+  if (!task.Title) return "Other";
   if (task.Title.includes("[SS")) return "Campaign";
   if (task.Title.includes("[OS")) return "One Shot";
-  if (task.Title.includes("Vacation")) return "วันหยุด";
+  if (task.Title.includes("Vacation")) return "Vacation";
   if (task.Title.includes("BGC")) return "Board Game";
-  return "อื่นๆ";
+  return "Other";
 };
 
 // Map category severity for color coding

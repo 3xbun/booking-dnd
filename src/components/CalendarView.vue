@@ -35,7 +35,7 @@
             <div class="task-info-block">
               <div class="task-header-row">
                 <span class="task-time">
-                  <i class="fa-duotone fa-solid fa-clock"></i> {{ task.Time }}
+                  <i class="fa-pixel fa-solid fa-clock"></i> {{ task.Time }}
                 </span>
                 <span class="task-badge" :class="getCategoryClass(task)">
                   {{ getCategoryLabel(task) }}
@@ -47,15 +47,15 @@
         </div>
         <div v-else class="dialog-empty-state">
           <i
-            class="fa-duotone fa-solid fa-calendar-circle-exclamation empty-icon"
+            class="fa-pixel fa-solid fa-calendar empty-icon"
           ></i>
-          <p>ไม่มีตารางงานหรือรายการจองในวันนี้</p>
+          <p>No schedule or bookings for this day</p>
         </div>
 
         <div class="dialog-footer">
           <Button
-            label="ปิดหน้าต่าง"
-            icon="fa-duotone fa-solid fa-xmark"
+            label="Close Window"
+            icon="fa-pixel fa-solid fa-xmark"
             @click="displayDialog = false"
             class="p-button-text"
           />
@@ -68,7 +68,6 @@
 <script setup>
 import { ref, computed } from "vue";
 import dayjs from "dayjs";
-import "dayjs/locale/th";
 
 import Card from "primevue/card";
 import Dialog from "primevue/dialog";
@@ -146,8 +145,8 @@ const onSelectDay = (day) => {
 
 // Computed Dialog Header Title
 const dialogHeader = computed(() => {
-  if (!selectedDay.value) return "รายการจอง";
-  return `รายการจองวันที่ ${selectedDay.value.locale("th").format("D MMMM YYYY")}`;
+  if (!selectedDay.value) return "Bookings";
+  return `Bookings for ${selectedDay.value.locale("en").format("D MMMM YYYY")}`;
 });
 
 // Helper functions for categorization styling
@@ -161,12 +160,12 @@ const getCategoryClass = (task) => {
 };
 
 const getCategoryLabel = (task) => {
-  if (!task.Title) return "อื่นๆ";
+  if (!task.Title) return "Other";
   if (task.Title.includes("[SS")) return "Campaign";
   if (task.Title.includes("[OS")) return "One Shot";
-  if (task.Title.includes("Vacation")) return "วันหยุด";
+  if (task.Title.includes("Vacation")) return "Vacation";
   if (task.Title.includes("BGC")) return "Board Game Club";
-  return "อื่นๆ";
+  return "Other";
 };
 </script>
 
