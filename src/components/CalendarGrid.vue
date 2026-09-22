@@ -9,12 +9,8 @@
 
     <!-- Days Grid -->
     <div class="days-grid">
-      <div
-        v-for="(day, index) in calendarGrid"
-        :key="index"
-        :class="['grid-cell', day.class, { clickable: day.date }]"
-        @click="day.date && $emit('select-day', day)"
-      >
+      <div v-for="(day, index) in calendarGrid" :key="index" :class="['grid-cell', day.class, { clickable: day.date }]"
+        @click="day.date && $emit('select-day', day)">
         <!-- Day Number Badge -->
         <div class="day-header">
           <span :class="['day-number', { 'today-badge': isToday(day) }]">
@@ -24,17 +20,10 @@
 
         <!-- List of Mini Tasks/Bookings (Max 2 shown) -->
         <div v-if="day.tasks && day.tasks.length > 0" class="cell-tasks-list">
-          <div
-            v-for="task in day.tasks.slice(0, 2)"
-            :key="task.Id"
-            :class="['mini-task-bar', getMiniTaskClass(task)]"
-            :title="`${getTaskTimeRange(task)} - ${task.Title}`"
-          >
+          <div v-for="task in day.tasks.slice(0, 2)" :key="task.Id" :class="['mini-task-bar', getMiniTaskClass(task)]"
+            :title="`${getTaskTimeRange(task)} - ${task.Title}`">
             <span class="mini-task-time">{{ getTaskStartTime(task) }}</span>
-            <span
-              class="mini-task-title"
-              :class="{ 'cancelled-title': isCancelledTask(task) }"
-            >
+            <span class="mini-task-title" :class="{ 'cancelled-title': isCancelledTask(task) }">
               {{ task.Title }}
             </span>
           </div>
@@ -138,12 +127,12 @@ const getMiniTaskClass = (task) => {
 .days-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-auto-rows: minmax(
-    5.75rem,
-    auto
-  ); /* Minimum height of 92px, grows if needed */
+  grid-auto-rows: minmax(5.75rem,
+      auto);
+  /* Minimum height of 92px, grows if needed */
   background: var(--dark-border);
-  gap: 1px; /* Creates clean cell borders */
+  gap: 1px;
+  /* Creates clean cell borders */
 }
 
 .grid-cell {

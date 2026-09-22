@@ -3,14 +3,8 @@
     <Card class="table-card">
       <template #content>
         <!-- PrimeVue DataTable -->
-        <DataTable
-          :value="tasks"
-          paginator
-          :rows="10"
-          :rowsPerPageOptions="[5, 10, 20, 50]"
-          removableSort
-          class="custom-table"
-        >
+        <DataTable :value="tasks" paginator :rows="10" :rowsPerPageOptions="[5, 10, 20, 50]" removableSort
+          class="custom-table">
           <!-- Date Column -->
           <Column field="Date" header="Date" sortable style="width: 25%">
             <template #body="slotProps">
@@ -42,17 +36,9 @@
           </Column>
 
           <!-- Title/Booking Name Column -->
-          <Column
-            field="Title"
-            header="Booking Details"
-            sortable
-            style="width: 35%"
-          >
+          <Column field="Title" header="Booking Details" sortable style="width: 35%">
             <template #body="slotProps">
-              <span
-                class="table-title"
-                :class="{ 'cancelled-title': isCancelledTask(slotProps.data) }"
-              >
+              <span class="table-title" :class="{ 'cancelled-title': isCancelledTask(slotProps.data) }">
                 {{ slotProps.data.Title }}
               </span>
             </template>
@@ -61,11 +47,8 @@
           <!-- Category/Type Column -->
           <Column header="Category" style="width: 20%">
             <template #body="slotProps">
-              <Tag
-                :value="getCategoryLabel(slotProps.data)"
-                :severity="getCategorySeverity(slotProps.data)"
-                class="table-category-tag"
-              />
+              <Tag :value="getCategoryLabel(slotProps.data)" :severity="getCategorySeverity(slotProps.data)"
+                class="table-category-tag" />
             </template>
           </Column>
 

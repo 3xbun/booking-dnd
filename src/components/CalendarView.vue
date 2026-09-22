@@ -3,34 +3,18 @@
     <Card class="calendar-card">
       <template #content>
         <!-- Calendar Grid -->
-        <CalendarGrid
-          :days-of-week="daysOfWeek"
-          :calendar-grid="calendarGrid"
-          @select-day="onSelectDay"
-        />
+        <CalendarGrid :days-of-week="daysOfWeek" :calendar-grid="calendarGrid" @select-day="onSelectDay" />
       </template>
     </Card>
 
     <!-- Dialog for Day Details -->
-    <Dialog
-      v-model:visible="displayDialog"
-      modal
-      :header="dialogHeader"
-      :style="{ width: '90vw', maxWidth: '440px' }"
-      class="custom-dialog"
-    >
+    <Dialog v-model:visible="displayDialog" modal :header="dialogHeader" :style="{ width: '90vw', maxWidth: '440px' }"
+      class="custom-dialog">
       <template #container>
         <div v-if="selectedDayTasks.length > 0" class="dialog-tasks-list">
-          <div
-            v-for="task in selectedDayTasks"
-            :key="task.Id"
-            class="dialog-task-item"
-          >
+          <div v-for="task in selectedDayTasks" :key="task.Id" class="dialog-task-item">
             <!-- Category Indicator Bar -->
-            <div
-              class="category-indicator"
-              :class="getCategoryClass(task)"
-            ></div>
+            <div class="category-indicator" :class="getCategoryClass(task)"></div>
 
             <div class="task-info-block">
               <div class="task-header-row">
@@ -42,29 +26,20 @@
                   {{ getCategoryLabel(task) }}
                 </span>
               </div>
-              <h4
-                class="task-title"
-                :class="{ 'cancelled-title': isCancelledTask(task) }"
-              >
+              <h4 class="task-title" :class="{ 'cancelled-title': isCancelledTask(task) }">
                 {{ task.Title }}
               </h4>
             </div>
           </div>
         </div>
         <div v-else class="dialog-empty-state">
-          <i
-            class="fa-pixel fa-solid fa-calendar empty-icon"
-          ></i>
+          <i class="fa-pixel fa-solid fa-calendar empty-icon"></i>
           <p>No schedule or bookings for this day</p>
         </div>
 
         <div class="dialog-footer">
-          <Button
-            label="Close Window"
-            icon="fa-pixel fa-solid fa-xmark"
-            @click="displayDialog = false"
-            class="p-button-text"
-          />
+          <Button label="Close Window" icon="fa-pixel fa-solid fa-xmark" @click="displayDialog = false"
+            class="p-button-text" />
         </div>
       </template>
     </Dialog>
@@ -306,6 +281,7 @@ const getCategoryLabel = (task) => {
   color: #3b82f6 !important;
   border-left: 5px solid #3b82f6;
 }
+
 div.category-indicator.cat-campaign {
   background-color: #3b82f6;
   border: none;
@@ -316,6 +292,7 @@ div.category-indicator.cat-campaign {
   color: #14b8a6 !important;
   border-left: 5px solid #14b8a6;
 }
+
 div.category-indicator.cat-oneshot {
   background-color: #14b8a6;
   border: none;
@@ -326,6 +303,7 @@ div.category-indicator.cat-oneshot {
   color: #f59e0b !important;
   border-left: 5px solid #f59e0b;
 }
+
 div.category-indicator.cat-vacation {
   background-color: #f59e0b;
   border: none;
@@ -336,6 +314,7 @@ div.category-indicator.cat-vacation {
   color: #8b5cf6 !important;
   border-left: 5px solid #8b5cf6;
 }
+
 div.category-indicator.cat-bgc {
   background-color: #8b5cf6;
   border: none;
@@ -346,6 +325,7 @@ div.category-indicator.cat-bgc {
   color: var(--dark-text-secondary) !important;
   border-left: 5px solid var(--dark-text-secondary);
 }
+
 div.category-indicator.cat-default {
   background-color: var(--dark-text-secondary);
   border: none;
