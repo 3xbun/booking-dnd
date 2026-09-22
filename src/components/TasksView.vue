@@ -21,12 +21,22 @@
             </template>
           </Column>
 
-          <!-- Time Column -->
-          <Column field="Time" header="Time" sortable style="width: 20%">
+          <!-- Start Time Column -->
+          <Column field="StartTime" header="Start Time" sortable style="width: 20%">
             <template #body="slotProps">
               <span class="table-time">
                 <i class="fa-pixel fa-solid fa-clock icon-dim"></i>
-                {{ slotProps.data.Time }}
+                {{ getTimeValue(slotProps.data, "start") }}
+              </span>
+            </template>
+          </Column>
+
+          <!-- End Time Column -->
+          <Column field="EndTime" header="End Time" sortable style="width: 20%">
+            <template #body="slotProps">
+              <span class="table-time">
+                <i class="fa-pixel fa-solid fa-clock icon-dim"></i>
+                {{ getTimeValue(slotProps.data, "end") }}
               </span>
             </template>
           </Column>
@@ -39,7 +49,12 @@
             style="width: 35%"
           >
             <template #body="slotProps">
-              <span class="table-title">{{ slotProps.data.Title }}</span>
+              <span
+                class="table-title"
+                :class="{ 'cancelled-title': isCancelledTask(slotProps.data) }"
+              >
+                {{ slotProps.data.Title }}
+              </span>
             </template>
           </Column>
 
@@ -86,6 +101,18 @@ defineProps({
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
   return dayjs(dateStr).format("D MMMM YYYY");
+};
+
+const isCancelledTask = (task) => {
+  return Boolean(task?.Title && task.Title.trim().endsWith("(CC)"));
+};
+
+const getTimeValue = (task, type) => {
+  if (type === "start") {
+    return task?.StartTime || task?.Time || "";
+  }
+
+  return task?.EndTime || "";
 };
 
 // Help map category labels
@@ -218,6 +245,12 @@ const getCategorySeverity = (task) => {
 .table-title {
   font-weight: 600;
   color: var(--white);
+}
+
+.cancelled-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.75;
 }
 
 .table-category-tag {

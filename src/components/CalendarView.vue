@@ -35,13 +35,19 @@
             <div class="task-info-block">
               <div class="task-header-row">
                 <span class="task-time">
-                  <i class="fa-pixel fa-solid fa-clock"></i> {{ task.Time }}
+                  <i class="fa-pixel fa-solid fa-clock"></i>
+                  {{ getTaskTimeRange(task) }}
                 </span>
                 <span class="task-badge" :class="getCategoryClass(task)">
                   {{ getCategoryLabel(task) }}
                 </span>
               </div>
-              <h4 class="task-title">{{ task.Title }}</h4>
+              <h4
+                class="task-title"
+                :class="{ 'cancelled-title': isCancelledTask(task) }"
+              >
+                {{ task.Title }}
+              </h4>
             </div>
           </div>
         </div>
@@ -148,6 +154,18 @@ const dialogHeader = computed(() => {
   if (!selectedDay.value) return "Bookings";
   return `Bookings for ${selectedDay.value.locale("en").format("D MMMM YYYY")}`;
 });
+
+const isCancelledTask = (task) => {
+  return Boolean(task?.Title && task.Title.trim().endsWith("(CC)"));
+};
+
+const getTaskTimeRange = (task) => {
+  const start = task?.StartTime || task?.Time || "";
+  const end = task?.EndTime || "";
+
+  if (start && end) return `${start} - ${end}`;
+  return start || end || "";
+};
 
 // Helper functions for categorization styling
 const getCategoryClass = (task) => {
@@ -274,6 +292,12 @@ const getCategoryLabel = (task) => {
   font-weight: 700;
   color: var(--white);
   margin: 0;
+}
+
+.cancelled-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.75;
 }
 
 /* Category Specific Styles */

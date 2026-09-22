@@ -28,10 +28,15 @@
             v-for="task in day.tasks.slice(0, 2)"
             :key="task.Id"
             :class="['mini-task-bar', getMiniTaskClass(task)]"
-            :title="`${task.Time} - ${task.Title}`"
+            :title="`${getTaskTimeRange(task)} - ${task.Title}`"
           >
-            <span class="mini-task-time">{{ task.Time }}</span>
-            <span class="mini-task-title">{{ task.Title }}</span>
+            <span class="mini-task-time">{{ getTaskStartTime(task) }}</span>
+            <span
+              class="mini-task-title"
+              :class="{ 'cancelled-title': isCancelledTask(task) }"
+            >
+              {{ task.Title }}
+            </span>
           </div>
 
           <!-- More items indicator -->
@@ -78,6 +83,22 @@ const translateDay = (day) => {
     Sun: "Sun",
   };
   return map[day] || day;
+};
+
+const isCancelledTask = (task) => {
+  return Boolean(task?.Title && task.Title.trim().endsWith("(CC)"));
+};
+
+const getTaskStartTime = (task) => {
+  return task?.StartTime || task?.Time || "";
+};
+
+const getTaskTimeRange = (task) => {
+  const start = getTaskStartTime(task);
+  const end = task?.EndTime || "";
+
+  if (start && end) return `${start} - ${end}`;
+  return start || end || "";
 };
 
 // Style classes for mini task indicators based on category
@@ -208,6 +229,12 @@ const getMiniTaskClass = (task) => {
   overflow: hidden;
   text-overflow: ellipsis;
   flex-grow: 1;
+}
+
+.cancelled-title {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  opacity: 0.75;
 }
 
 /* Mini Task Categories */
