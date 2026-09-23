@@ -35,19 +35,9 @@
         <Card class="month-nav-card">
           <template #content>
             <div class="month-nav-wrapper">
-              <CalendarHeader
-                :month-year="monthYearLabel"
-                @prev-month="prevMonth"
-                @next-month="nextMonth"
-              />
-              <Button
-                label="This Month"
-                icon="fa-pixel fa-solid fa-calendar"
-                severity="primary"
-                variant="outlined"
-                class="today-btn"
-                @click="goToToday"
-              />
+              <CalendarHeader :month-year="monthYearLabel" @prev-month="prevMonth" @next-month="nextMonth" />
+              <Button label="This Month" icon="fa-pixel fa-solid fa-calendar" severity="primary" variant="outlined"
+                class="today-btn" @click="goToToday" />
             </div>
           </template>
         </Card>
@@ -109,9 +99,7 @@
                 <span class="stat-value text-orange">{{ vacationDays }}</span>
               </div>
               <div class="stat-icon-wrapper bg-orange-dim">
-                <i
-                  class="fa-pixel fa-solid fa-umbrella text-orange"
-                ></i>
+                <i class="fa-pixel fa-solid fa-umbrella text-orange"></i>
               </div>
             </div>
           </template>
@@ -129,15 +117,11 @@
                   }}</span>
                 </template>
                 <template v-else>
-                  <span class="next-session-title text-secondary"
-                    >No upcoming sessions</span
-                  >
+                  <span class="next-session-title text-secondary">No upcoming sessions</span>
                 </template>
               </div>
               <div class="stat-icon-wrapper bg-green-dim">
-                <i
-                  class="fa-pixel fa-solid fa-hourglass text-green"
-                ></i>
+                <i class="fa-pixel fa-solid fa-hourglass text-green"></i>
               </div>
             </div>
           </template>
@@ -151,13 +135,8 @@
             <div class="controls-wrapper">
               <!-- View Toggle (Calendar vs List) -->
               <div class="view-toggle-container">
-                <SelectButton
-                  v-model="currentView"
-                  :options="viewOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  :allowEmpty="false"
-                />
+                <SelectButton v-model="currentView" :options="viewOptions" optionLabel="label" optionValue="value"
+                  :allowEmpty="false" />
               </div>
 
               <!-- Search and Category Filters -->
@@ -165,32 +144,20 @@
                 <!-- Search Box -->
                 <div class="search-box">
                   <span class="p-input-icon-left w-full">
-                    <i
-                      class="fa-pixel fa-solid fa-magnifying-glass search-icon"
-                    ></i>
-                    <input
-                      type="text"
-                      v-model="searchQuery"
-                      placeholder="Search schedule name..."
-                      class="custom-search-input"
-                    />
+                    <i class="fa-pixel fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" v-model="searchQuery" placeholder="Search schedule name..."
+                      class="custom-search-input" />
                   </span>
                 </div>
 
                 <!-- Category Pills -->
                 <div class="category-pills">
-                  <Button
-                    v-for="pill in categoryOptions"
-                    :key="pill.value"
-                    :label="pill.label"
-                    :class="[
-                      'p-button-rounded p-button-sm',
-                      activeFilter === pill.value
-                        ? 'p-button-primary'
-                        : 'p-button-outlined p-button-secondary',
-                    ]"
-                    @click="activeFilter = pill.value"
-                  />
+                  <Button v-for="pill in categoryOptions" :key="pill.value" :label="pill.label" :class="[
+                    'p-button-rounded p-button-sm',
+                    activeFilter === pill.value
+                      ? 'p-button-primary'
+                      : 'p-button-outlined p-button-secondary',
+                  ]" @click="activeFilter = pill.value" />
                 </div>
               </div>
             </div>
@@ -570,6 +537,7 @@ const formatDate = (dateStr) => {
 .text-red {
   color: #ef4444;
 }
+
 .bg-red-dim {
   background: rgba(239, 68, 68, 0.1);
 }
@@ -577,6 +545,7 @@ const formatDate = (dateStr) => {
 .text-blue {
   color: #3b82f6;
 }
+
 .bg-blue-dim {
   background: rgba(59, 130, 246, 0.1);
 }
@@ -584,6 +553,7 @@ const formatDate = (dateStr) => {
 .text-teal {
   color: #14b8a6;
 }
+
 .bg-teal-dim {
   background: rgba(20, 184, 166, 0.1);
 }
@@ -591,6 +561,7 @@ const formatDate = (dateStr) => {
 .text-orange {
   color: #f59e0b;
 }
+
 .bg-orange-dim {
   background: rgba(245, 158, 11, 0.1);
 }
@@ -598,6 +569,7 @@ const formatDate = (dateStr) => {
 .text-green {
   color: #10b981;
 }
+
 .bg-green-dim {
   background: rgba(16, 185, 129, 0.1);
 }
@@ -642,9 +614,11 @@ const formatDate = (dateStr) => {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .next-session-card {
     grid-column: span 2;
   }
+
   .stat-card :deep(.p-card-body) {
     padding: 1.25rem !important;
   }
@@ -654,6 +628,7 @@ const formatDate = (dateStr) => {
   .stats-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
   .next-session-card {
     grid-column: span 2;
   }
@@ -663,6 +638,7 @@ const formatDate = (dateStr) => {
   .stats-grid {
     grid-template-columns: repeat(5, 1fr);
   }
+
   .next-session-card {
     grid-column: span 1;
   }
