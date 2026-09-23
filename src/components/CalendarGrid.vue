@@ -161,6 +161,22 @@ const getMiniTaskClass = (task) => {
   cursor: default;
 }
 
+.grid-cell.adjacent-month {
+  background-color: #151515;
+}
+
+.grid-cell.adjacent-month .day-number {
+  color: #666;
+}
+
+.grid-cell.adjacent-month .mini-task-bar {
+  opacity: 0.5;
+}
+
+.grid-cell.adjacent-month .more-tasks-indicator {
+  color: #666;
+}
+
 .day-header {
   display: flex;
   justify-content: flex-end;

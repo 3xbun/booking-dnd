@@ -83,38 +83,49 @@ const calendarGrid = computed(() => {
   const daysInMonth = props.currentMonth.daysInMonth();
   const grid = [];
 
-  // Pad the start of the grid with empty days
+  // Fill the leading cells with the final days of the previous month.
   for (let i = 0; i < paddingDays; i++) {
-    grid.push({ date: null, day: "", class: "empty", tasks: [] });
+    const date = props.currentMonth.startOf("month").subtract(paddingDays - i, "day");
+    grid.push(createCalendarDay(date, true));
   }
 
-  // Populate days of the current month
+  // Populate the current month and match tasks by their actual date.
   for (let i = 1; i <= daysInMonth; i++) {
     const date = props.currentMonth.date(i);
-    let cellClass = "day";
+    grid.push(createCalendarDay(date));
+  }
 
-    if (today.isSame(date, "day")) {
-      cellClass += " today";
-    }
-
-    // Match tasks
-    const dateStr = date.format("YYYY-MM-DD");
-    const dayTasks = props.tasks.filter((task) => task.Date === dateStr);
-
-    if (dayTasks.length > 0) {
-      cellClass += " has-tasks";
-    }
-
-    grid.push({
-      date: date,
-      day: i,
-      class: cellClass,
-      tasks: dayTasks,
-    });
+  // Complete the final week with the first days of the next month.
+  const trailingDays = (7 - (grid.length % 7)) % 7;
+  for (let i = 1; i <= trailingDays; i++) {
+    const date = props.currentMonth.endOf("month").add(i, "day");
+    grid.push(createCalendarDay(date, true));
   }
 
   return grid;
 });
+
+const createCalendarDay = (date, isAdjacentMonth = false) => {
+  let cellClass = isAdjacentMonth ? "day adjacent-month" : "day";
+
+  if (today.isSame(date, "day")) {
+    cellClass += " today";
+  }
+
+  const dateStr = date.format("YYYY-MM-DD");
+  const dayTasks = props.tasks.filter((task) => task.Date === dateStr);
+
+  if (dayTasks.length > 0) {
+    cellClass += " has-tasks";
+  }
+
+  return {
+    date,
+    day: date.date(),
+    class: cellClass,
+    tasks: dayTasks,
+  };
+};
 
 // Handle selecting a day to show details
 const onSelectDay = (day) => {

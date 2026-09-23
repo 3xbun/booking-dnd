@@ -202,7 +202,7 @@
       <section class="main-view-container">
         <Transition name="fade" mode="out-in">
           <div v-if="currentView === 'calendar'" key="calendar">
-            <CalendarView :tasks="filteredTasks" :current-month="currentDate" />
+            <CalendarView :tasks="calendarTasks" :current-month="currentDate" />
           </div>
           <div v-else key="list">
             <TasksView :tasks="filteredTasks" />
@@ -328,28 +328,47 @@ const nextSession = computed(() => {
 });
 
 // Computed Filtered Tasks (drawn from current month tasks only!)
-const filteredTasks = computed(() => {
-  return currentMonthTasks.value.filter((task) => {
-    // Search filter
-    const matchesSearch =
-      !searchQuery.value ||
-      (task.Title &&
-        task.Title.toLowerCase().includes(searchQuery.value.toLowerCase()));
-    if (!matchesSearch) return false;
+const matchesActiveFilters = (task) => {
+  const matchesSearch =
+    !searchQuery.value ||
+    (task.Title &&
+      task.Title.toLowerCase().includes(searchQuery.value.toLowerCase()));
+  if (!matchesSearch) return false;
 
-    // Category filter
-    if (activeFilter.value === "All") return true;
-    if (activeFilter.value === "Campaign") return task.Title?.includes("[SS");
-    if (activeFilter.value === "OneShot") return task.Title?.includes("[OS");
-    if (activeFilter.value === "Vacation")
-      return task.Title?.includes("Vacation");
-    if (activeFilter.value === "Other")
-      return (
-        !task.Title?.includes("[SS") &&
-        !task.Title?.includes("[OS") &&
-        !task.Title?.includes("Vacation")
-      );
-    return true;
+  if (activeFilter.value === "All") return true;
+  if (activeFilter.value === "Campaign") return task.Title?.includes("[SS");
+  if (activeFilter.value === "OneShot") return task.Title?.includes("[OS");
+  if (activeFilter.value === "Vacation") return task.Title?.includes("Vacation");
+  if (activeFilter.value === "Other") {
+    return (
+      !task.Title?.includes("[SS") &&
+      !task.Title?.includes("[OS") &&
+      !task.Title?.includes("Vacation")
+    );
+  }
+  return true;
+};
+
+const filteredTasks = computed(() => {
+  return currentMonthTasks.value.filter(matchesActiveFilters);
+});
+
+const calendarTasks = computed(() => {
+  const monthStart = currentDate.value.startOf("month");
+  const leadingDays = (monthStart.day() + 6) % 7;
+  const calendarStart = monthStart.subtract(leadingDays, "day");
+  const calendarEnd = currentDate.value.endOf("month").add(
+    (7 - ((leadingDays + currentDate.value.daysInMonth()) % 7)) % 7,
+    "day",
+  );
+
+  return Tasks.value.filter((task) => {
+    if (!task.Date || !matchesActiveFilters(task)) return false;
+    const taskDate = dayjs(task.Date);
+    return (
+      !taskDate.isBefore(calendarStart, "day") &&
+      !taskDate.isAfter(calendarEnd, "day")
+    );
   });
 });
 
