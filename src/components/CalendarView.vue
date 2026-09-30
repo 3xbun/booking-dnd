@@ -19,7 +19,7 @@
             <div class="task-info-block">
               <div class="task-header-row">
                 <span class="task-time">
-                  <i class="fa-pixel fa-solid fa-clock"></i>
+                  <i class="fa-duotone fa-solid fa-clock"></i>
                   {{ getTaskTimeRange(task) }}
                 </span>
                 <span class="task-badge" :class="getCategoryClass(task)">
@@ -33,12 +33,12 @@
           </div>
         </div>
         <div v-else class="dialog-empty-state">
-          <i class="fa-pixel fa-solid fa-calendar empty-icon"></i>
+          <i class="fa-duotone fa-solid fa-calendar empty-icon"></i>
           <p>No schedule or bookings for this day</p>
         </div>
 
         <div class="dialog-footer">
-          <Button label="Close Window" icon="fa-pixel fa-solid fa-xmark" @click="displayDialog = false"
+          <Button label="Close Window" icon="fa-duotone fa-solid fa-xmark" @click="displayDialog = false"
             class="p-button-text" />
         </div>
       </template>

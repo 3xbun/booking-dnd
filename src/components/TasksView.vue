@@ -9,7 +9,7 @@
           <Column field="Date" header="Date" sortable style="width: 25%">
             <template #body="slotProps">
               <span class="table-date">
-                <i class="fa-pixel fa-solid fa-calendar icon-dim"></i>
+                <i class="fa-duotone fa-solid fa-calendar icon-dim"></i>
                 {{ formatDate(slotProps.data.Date) }}
               </span>
             </template>
@@ -19,7 +19,7 @@
           <Column field="StartTime" header="Start Time" sortable style="width: 20%">
             <template #body="slotProps">
               <span class="table-time">
-                <i class="fa-pixel fa-solid fa-clock icon-dim"></i>
+                <i class="fa-duotone fa-solid fa-clock icon-dim"></i>
                 {{ getTimeValue(slotProps.data, "start") }}
               </span>
             </template>
@@ -29,7 +29,7 @@
           <Column field="EndTime" header="End Time" sortable style="width: 20%">
             <template #body="slotProps">
               <span class="table-time">
-                <i class="fa-pixel fa-solid fa-clock icon-dim"></i>
+                <i class="fa-duotone fa-solid fa-clock icon-dim"></i>
                 {{ getTimeValue(slotProps.data, "end") }}
               </span>
             </template>
@@ -55,7 +55,7 @@
           <!-- Empty State Layout -->
           <template #empty>
             <div class="table-empty-state">
-              <i class="fa-pixel fa-solid fa-magnifying-glass empty-icon"></i>
+              <i class="fa-duotone fa-solid fa-magnifying-glass empty-icon"></i>
               <p>No booking records found in the system</p>
             </div>
           </template>
