@@ -1,114 +1,183 @@
 <template>
-  <div class="adventures-view">
-    <!-- Loading State -->
-    <div v-if="loading" class="loading-container">
-      <i class="fa-duotone fa-regular fa-arrows-rotate fa-spin"></i>
-      <p>Loading adventures...</p>
-    </div>
-
-    <!-- Error State -->
-    <div v-else-if="error" class="error-container">
-      <Message severity="error" life="5000">
-        <i class="fa-duotone fa-solid fa-triangle-exclamation"></i>
-        Unable to load adventures. Please try again.
-      </Message>
-    </div>
-
-    <div v-else class="adventures-content">
-      <!-- Filter Bar -->
-      <div class="filter-bar">
-        <div class="filter-group">
-          <span class="filter-label">Type</span>
-          <div class="filter-pills">
-            <Button v-for="t in typeOptions" :key="t" :label="t" :class="[
-              'p-button-rounded p-button-sm',
-              selectedType === t
-                ? 'p-button-primary'
-                : 'p-button-outlined p-button-secondary',
-            ]" @click="selectedType = t === selectedType ? '' : t" />
-          </div>
-        </div>
-        <div class="filter-group">
-          <span class="filter-label">Tags</span>
-          <div class="filter-pills">
-            <Button v-for="t in tagOptions" :key="t" :label="t" :class="[
-              'p-button-rounded p-button-sm',
-              selectedTags.includes(t)
-                ? 'p-button-primary'
-                : 'p-button-outlined p-button-secondary',
-            ]" @click="toggleTag(t)" />
-          </div>
-        </div>
-        <Button v-if="selectedType || selectedTags.length" label="Clear" icon="fa-duotone fa-solid fa-xmark"
-          class="p-button-text p-button-sm" @click="clearFilters" />
+  <div>
+    <div class="adventures-view">
+      <!-- Loading State -->
+      <div v-if="loading" class="loading-container">
+        <i class="fa-duotone fa-regular fa-arrows-rotate fa-spin"></i>
+        <p>Loading adventures...</p>
       </div>
 
-      <!-- Unified List (100% width cards) -->
-      <section v-if="filteredAdventures.length" class="adventure-section">
-        <div class="adventure-list">
-          <Card v-for="adventure in filteredAdventures" :key="adventure.id" class="adventure-card">
-            <template #content>
-              <div class="adventure-card-inner">
-                <!-- Book Cover -->
-                <div class="book-cover">
-                  <img :src="coverUrls.get(adventure.adventureId) || '/adventures/Generic.webp'"
-                    :alt="adventure.title + ' cover'" class="cover-image" />
-                  <!-- Hidden preloader for specific cover -->
-                  <img v-if="adventure.adventureId" :src="'/adventures/' + adventure.adventureId + '.webp'"
-                    @load="onCoverLoad(adventure, $event)" @error="onCoverError(adventure)" style="display: none;" />
-                </div>
+      <!-- Error State -->
+      <div v-else-if="error" class="error-container">
+        <Message severity="error" life="5000">
+          <i class="fa-duotone fa-solid fa-triangle-exclamation"></i>
+          Unable to load adventures. Please try again.
+        </Message>
+      </div>
 
-                <!-- Content -->
-                <div class="adventure-content">
-                  <div class="adventure-header">
-                    <h4 class="adventure-name">{{ adventure.title }}</h4>
-                    <div class="adventure-tags">
-                      <Tag v-for="tag in adventure.displayTags" :key="tag" :value="tag" :severity="tagSeverity(tag)"
-                        class="adventure-tag" />
+      <div v-else class="adventures-content">
+        <!-- Hero CTA Section -->
+        <section class="hero-cta">
+          <!-- Animated Book Covers Background -->
+          <div class="hero-cta-bg" aria-hidden="true">
+            <div class="hero-cta-books">
+              <div v-for="(book, index) in randomBooks" :key="book.id" class="hero-cta-book" :style="book.style">
+                <img :src="book.cover" :alt="book.title + ' cover'" class="hero-cta-book-img" />
+              </div>
+            </div>
+          </div>
+
+          <div class="hero-cta-content">
+            <h1 class="hero-cta-title">
+              <i class="fa-duotone fa-solid fa-magic-wand-sparkles"></i>
+              ไม่แน่ใจจะเลือกอันไหน?
+            </h1>
+            <p class="hero-cta-subtitle">
+              ตอบคำถามสั้นๆ เราจะแนะนำ 3 ผจญภัยที่ตรงกับสไตล์ของคุณ
+            </p>
+            <RouterLink to="/adventures/random" class="hero-cta-btn">
+              <Button label="ช่วยเลือกให้หน่อย" icon="fa-duotone fa-solid fa-magic-wand-sparkles"
+                class="hero-cta-btn-inner" />
+            </RouterLink>
+          </div>
+        </section>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <div class="filter-group">
+            <span class="filter-label">Type</span>
+            <div class="filter-pills">
+              <Button v-for="t in typeOptions" :key="t" :label="t" :class="[
+                'p-button-rounded p-button-sm',
+                selectedType === t
+                  ? 'p-button-primary'
+                  : 'p-button-outlined p-button-secondary',
+              ]" @click="selectedType = t === selectedType ? '' : t" />
+            </div>
+          </div>
+          <div class="filter-group">
+            <span class="filter-label">Tags</span>
+            <div class="filter-pills">
+              <Button v-for="t in tagOptions" :key="t" :label="t" :class="[
+                'p-button-rounded p-button-sm',
+                selectedTags.includes(t)
+                  ? 'p-button-primary'
+                  : 'p-button-outlined p-button-secondary',
+              ]" @click="toggleTag(t)" />
+            </div>
+          </div>
+          <Button v-if="selectedType || selectedTags.length" label="Clear" icon="fa-duotone fa-solid fa-xmark"
+            class="p-button-text p-button-sm" @click="clearFilters" />
+        </div>
+
+        <!-- Unified List (100% width cards) -->
+        <section v-if="filteredAdventures.length" class="adventure-section">
+          <div class="adventure-list">
+            <Card v-for="adventure in filteredAdventures" :key="adventure.id" class="adventure-card"
+              @click="openHighlight(adventure.id)">
+              <template #content>
+                <div class="adventure-card-inner">
+                  <!-- Book Cover -->
+                  <div class="book-cover">
+                    <img :src="coverUrls.get(adventure.adventureId) || '/adventures/Generic.webp'"
+                      :alt="adventure.title + ' cover'" class="cover-image" />
+                    <!-- Hidden preloader for specific cover -->
+                    <img v-if="adventure.adventureId" :src="'/adventures/' + adventure.adventureId + '.webp'"
+                      @load="onCoverLoad(adventure, $event)" @error="onCoverError(adventure)" style="display: none;" />
+                  </div>
+
+                  <!-- Content -->
+                  <div class="adventure-content">
+                    <div class="adventure-header">
+                      <h4 class="adventure-name">{{ adventure.title }}</h4>
+                      <div class="adventure-tags">
+                        <Tag v-for="tag in adventure.displayTags" :key="tag" :value="tag" :severity="tagSeverity(tag)"
+                          class="adventure-tag" />
+                      </div>
+                    </div>
+
+                    <p class="adventure-description">{{ adventure.description }}</p>
+
+                    <div class="adventure-meta">
+                      <span class="meta-item">
+                        <i class="fa-duotone fa-solid fa-chart-simple"></i>
+                        Lv {{ adventure.startLevel }}{{ adventure.endLevel && adventure.endLevel !==
+                          adventure.startLevel
+                          ? "–" + adventure.endLevel : "" }}
+                      </span>
+                      <span v-if="adventure.settings" class="meta-item">
+                        <i class="fa-duotone fa-solid fa-map-location-dot"></i>
+                        {{ adventure.settings }}
+                      </span>
                     </div>
                   </div>
-
-                  <p class="adventure-description">{{ adventure.description }}</p>
-
-                  <div class="adventure-meta">
-                    <span class="meta-item">
-                      <i class="fa-duotone fa-solid fa-chart-simple"></i>
-                      Lv {{ adventure.startLevel }}{{ adventure.endLevel && adventure.endLevel !== adventure.startLevel
-                        ? "–" + adventure.endLevel : "" }}
-                    </span>
-                    <span v-if="adventure.settings" class="meta-item">
-                      <i class="fa-duotone fa-solid fa-map-location-dot"></i>
-                      {{ adventure.settings }}
-                    </span>
-                  </div>
                 </div>
-              </div>
-            </template>
-          </Card>
-        </div>
-      </section>
+              </template>
+            </Card>
+          </div>
+        </section>
 
-      <!-- Empty State -->
-      <div v-if="!filteredAdventures.length && catalog.length" class="empty-state">
-        <i class="fa-duotone fa-solid fa-filter empty-icon"></i>
-        <p>No adventures match the current filters.</p>
-      </div>
-      <div v-if="!catalog.length" class="empty-state">
-        <i class="fa-duotone fa-solid fa-scroll empty-icon"></i>
-        <p>No adventures found in the catalog.</p>
+        <!-- Empty State -->
+        <div v-if="!filteredAdventures.length && catalog.length" class="empty-state">
+          <i class="fa-duotone fa-solid fa-filter empty-icon"></i>
+          <p>No adventures match the current filters.</p>
+        </div>
+        <div v-if="!catalog.length" class="empty-state">
+          <i class="fa-duotone fa-solid fa-scroll empty-icon"></i>
+          <p>No adventures found in the catalog.</p>
+        </div>
       </div>
     </div>
+
+    <!-- Highlight Modal -->
+    <Teleport to="body">
+      <div v-if="showHighlight" class="highlight-modal-overlay" @click.self="closeHighlight">
+        <div class="highlight-modal" @click.stop>
+          <div class="highlight-modal-header">
+            <h3>{{ selectedAdventure ? selectedAdventure.title : '' }}</h3>
+            <Button icon="fa-duotone fa-solid fa-xmark" class="p-button-text p-button-sm" @click="closeHighlight" />
+          </div>
+          <div v-if="selectedAdventure" class="highlight-modal-content">
+            <div class="highlight-cover">
+              <img :src="coverUrls.get(selectedAdventure.adventureId) || '/adventures/Generic.webp'"
+                :alt="selectedAdventure.title + ' cover'" class="highlight-cover-img" />
+            </div>
+            <div class="highlight-tags">
+              <Tag v-for="tag in selectedAdventure.displayTags" :key="tag" :value="tag" :severity="tagSeverity(tag)"
+                class="highlight-tag" />
+            </div>
+            <p class="highlight-description">{{ selectedAdventure.description }}</p>
+            <div class="highlight-meta">
+              <span class="meta-item">
+                <i class="fa-duotone fa-solid fa-chart-simple"></i>
+                Lv {{ selectedAdventure.startLevel }}{{ selectedAdventure.endLevel && selectedAdventure.endLevel !==
+                  selectedAdventure.startLevel ? "–" + selectedAdventure.endLevel : "" }}
+              </span>
+              <span v-if="selectedAdventure.settings" class="meta-item">
+                <i class="fa-duotone fa-solid fa-map-location-dot"></i>
+                {{ selectedAdventure.settings }}
+              </span>
+            </div>
+          </div>
+          <div class="highlight-modal-footer">
+            <Button label="ปิด" icon="fa-duotone fa-solid fa-xmark" @click="closeHighlight" class="p-button-text" />
+          </div>
+        </div>
+      </div>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted, ref, reactive } from "vue";
+import { computed, onMounted, ref, reactive, watch, onBeforeUnmount } from "vue";
 import axios from "axios";
 
 import Card from "primevue/card";
 import Button from "primevue/button";
 import Tag from "primevue/tag";
 import Message from "primevue/message";
+
+import { RouterLink, useRoute, useRouter } from "vue-router";
 
 const ADVENTURES_URL =
   "https://ndb.3xbun.com/api/v3/data/p0w0egc69gysun8/mslau6b61v0pln0/records";
@@ -127,6 +196,91 @@ const coverUrls = reactive(new Map());
 // Filter state
 const selectedType = ref("");
 const selectedTags = ref([]);
+
+// Highlight modal - simple approach
+const selectedAdventure = ref(null);
+const showHighlight = ref(false);
+
+// Handle highlight from URL query
+const openHighlight = (id) => {
+  const found = catalog.value.find((a) => a.id === parseInt(id));
+  if (found) {
+    selectedAdventure.value = found;
+    showHighlight.value = true;
+  }
+};
+
+// Watch for highlight query parameter
+const route = useRoute();
+watch(() => route.query.highlight, (val) => {
+  if (val) {
+    openHighlight(val);
+  } else {
+    selectedAdventure.value = null;
+    showHighlight.value = false;
+  }
+});
+
+// Close modal on route change (before navigation)
+watch(() => route.fullPath, () => {
+  if (showHighlight.value) {
+    closeHighlight();
+  }
+});
+
+// Close modal on component unmount
+onBeforeUnmount(() => {
+  if (showHighlight.value) {
+    selectedAdventure.value = null;
+    showHighlight.value = false;
+    // Clean up any teleported elements
+    const modals = document.querySelectorAll('.highlight-modal-overlay');
+    modals.forEach(el => el.remove());
+  }
+});
+
+// Close highlight modal
+const closeHighlight = () => {
+  selectedAdventure.value = null;
+  showHighlight.value = false;
+  router.push({ path: route.path, query: {} });
+};
+
+// Hero CTA random book covers - 10 books raining down
+const randomBooks = computed(() => {
+  if (catalog.value.length === 0) return [];
+  // Shuffle and take up to 10
+  const shuffled = [...catalog.value].sort(() => Math.random() - 0.5);
+  const count = Math.min(10, shuffled.length);
+  return shuffled.slice(0, count).map((book) => {
+    const xPos = Math.random() * 90 + 5; // 5-95%
+    const startY = -50 - Math.random() * 50; // Start above viewport
+    const endY = 110 + Math.random() * 30; // End below viewport
+    const duration = 8 + Math.random() * 8; // 8-16s fall duration
+    const delay = Math.random() * 15; // Staggered start
+    const rotation = (Math.random() - 0.5) * 30; // -15 to 15 deg
+    const scale = 0.5 + Math.random() * 0.6; // 0.5-1.1
+    const fallDistance = 100 + Math.random() * 50; // 100-150vh fall
+
+    return {
+      id: book.id,
+      cover: book.adventureId ? `/adventures/${book.adventureId}.webp` : null,
+      title: book.title,
+      style: {
+        left: `${Math.random() * 90 + 5}%`,
+        top: `${-50 - Math.random() * 50}%`,
+        '--rotation': `${(Math.random() - 0.5) * 30}deg`,
+        '--scale': `${0.5 + Math.random() * 0.6}`,
+        '--delay': `${Math.random() * 15}s`,
+        '--duration': `${8 + Math.random() * 8}s`,
+        '--fall-distance': `${100 + Math.random() * 100}vh`,
+        '--opacity': '0.1',
+      }
+    };
+  });
+});
+
+const router = useRouter();
 
 // Unique type options from catalog
 const typeOptions = computed(() => {
@@ -235,12 +389,12 @@ const catalog = computed(() => {
 // Tag color by type - uses keyword matching for flexible tag colors
 const tagSeverity = (tag) => {
   const t = tag.toLowerCase();
-  
+
   // Exact type matches first
   if (tag === "One Shot") return "success";
   if (tag === "Long Campaign") return "info";
   if (tag === "Short Campaigns") return "warn";
-  
+
   // Keyword-based matching (check more specific first)
   if (t.includes("horror")) return "danger";
   if (t.includes("dark fantasy") || t.includes("grimdark")) return "danger";
@@ -251,7 +405,7 @@ const tagSeverity = (tag) => {
   if (t.includes("combat") || t.includes("tactical")) return "warn";
   if (t.includes("roleplay") || t.includes("social")) return "info";
   if (t.includes("exploration") || t.includes("sandbox")) return "info";
-  
+
   return "secondary";
 };
 </script>
@@ -308,7 +462,276 @@ const tagSeverity = (tag) => {
   font-size: 0.8rem !important;
 }
 
-/* Level select dropdowns */
+.help-me-pick-link {
+  flex-shrink: 0;
+}
+
+.help-me-pick-btn {
+  height: 2.25rem !important;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6) !important;
+  border: none !important;
+  color: var(--white) !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  padding: 0.4rem 1rem !important;
+  box-shadow: 0 4px 12px rgba(220, 39, 44, 0.3) !important;
+  transition: all 0.2s !important;
+}
+
+.help-me-pick-btn:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 16px rgba(220, 39, 44, 0.4) !important;
+  background: linear-gradient(135deg, #dc272e, #7c3aed) !important;
+}
+
+/* Hero CTA Section */
+.hero-cta {
+  margin-bottom: 1.5rem;
+  padding: 2.5rem 2rem;
+  background: linear-gradient(135deg, rgba(220, 39, 44, 0.15), rgba(139, 92, 246, 0.15));
+  border: 1px solid rgba(220, 39, 44, 0.3);
+  border-radius: 1.5rem;
+  text-align: center;
+}
+
+.hero-cta-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.hero-cta-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--white);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.hero-cta-title i {
+  color: var(--primary);
+  font-size: 2.25rem;
+}
+
+.hero-cta-subtitle {
+  margin: 0 0 1.5rem 0;
+  color: var(--dark-text-secondary);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.hero-cta-btn {
+  display: inline-block;
+}
+
+.hero-cta-btn-inner {
+  height: 3.5rem !important;
+  background: linear-gradient(135deg, var(--primary), #8b5cf6) !important;
+  border: none !important;
+  color: var(--white) !important;
+  border-radius: 0.75rem !important;
+  font-size: 1.1rem !important;
+  font-weight: 700 !important;
+  padding: 0 2.5rem !important;
+  box-shadow: 0 8px 24px rgba(220, 39, 44, 0.4) !important;
+  transition: all 0.2s !important;
+}
+
+.hero-cta-btn-inner:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 32px rgba(220, 39, 44, 0.5) !important;
+  background: linear-gradient(135deg, #dc272e, #7c3aed) !important;
+}
+
+/* Hero CTA Background Book Covers */
+.hero-cta {
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-cta-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.hero-cta-books {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-cta-book {
+  position: absolute;
+  width: 180px;
+  height: 270px;
+  transform-origin: center center;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.35));
+  opacity: var(--opacity, 0.1);
+  z-index: 0;
+  animation: rainDown var(--duration, 12s) linear var(--delay, 0s) infinite;
+  transform: rotate(var(--rotation, 0deg)) scale(var(--scale, 0.8));
+}
+
+.hero-cta-book-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  box-shadow:
+    0 10px 25px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+@keyframes rainDown {
+  0% {
+    transform: rotate(var(--rotation, 0deg)) scale(var(--scale, 0.8)) translateY(0);
+    opacity: 0;
+  }
+
+  5% {
+    opacity: var(--opacity, 0.1);
+  }
+
+  95% {
+    opacity: var(--opacity, 0.1);
+  }
+
+  100% {
+    transform: rotate(var(--rotation, 0deg)) scale(var(--scale, 0.8)) translateY(var(--fall-distance, 200vh));
+    opacity: 0;
+  }
+}
+
+.hero-cta-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* Highlight Modal */
+.highlight-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.highlight-modal {
+  background: var(--dark-card);
+  border: 1px solid var(--dark-border);
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideUp 0.2s ease;
+}
+
+.highlight-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--dark-border);
+}
+
+.highlight-modal-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.highlight-modal-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.highlight-cover {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.highlight-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.highlight-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.highlight-tag {
+  font-size: 0.65rem !important;
+}
+
+.highlight-description {
+  margin: 0;
+  color: var(--dark-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.highlight-meta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-size: 0.8rem;
+  color: var(--dark-text-secondary);
+}
+
+.highlight-meta .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.highlight-modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--dark-border);
+  display: flex;
+  justify-content: flex-end;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Loading & Error */
 .loading-container {
   display: flex;
@@ -343,6 +766,7 @@ const tagSeverity = (tag) => {
   border: 1px solid var(--dark-border) !important;
   border-radius: 0.75rem !important;
   transition: border-color 0.2s;
+  cursor: pointer;
 }
 
 .adventure-card:hover {
