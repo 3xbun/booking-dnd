@@ -43,32 +43,43 @@
         </section>
 
         <!-- Filter Bar -->
-        <div class="filter-bar">
-          <div class="filter-group">
-            <span class="filter-label">Type</span>
-            <div class="filter-pills">
-              <Button v-for="t in typeOptions" :key="t" :label="t" :class="[
-                'p-button-rounded p-button-sm',
-                selectedType === t
-                  ? 'p-button-primary'
-                  : 'p-button-outlined p-button-secondary',
-              ]" @click="selectedType = t === selectedType ? '' : t" />
-            </div>
-          </div>
-          <div class="filter-group">
-            <span class="filter-label">Tags</span>
-            <div class="filter-pills">
-              <Button v-for="t in tagOptions" :key="t" :label="t" :class="[
-                'p-button-rounded p-button-sm',
-                selectedTags.includes(t)
-                  ? 'p-button-primary'
-                  : 'p-button-outlined p-button-secondary',
-              ]" @click="toggleTag(t)" />
-            </div>
-          </div>
-          <Button v-if="selectedType || selectedTags.length" label="Clear" icon="fa-duotone fa-solid fa-xmark"
-            class="p-button-text p-button-sm" @click="clearFilters" />
-        </div>
+              <div class="filter-bar">
+                <div class="filter-header" @click="showFilters = !showFilters">
+                  <span class="filter-title">
+                    <i class="fa-duotone fa-solid fa-filter"></i>
+                    ตัวกรอง
+                  </span>
+                  <i class="fa-duotone fa-solid fa-chevron-down" :class="{ rotated: showFilters }" />
+                </div>
+                <Transition name="filter-collapse">
+                  <div v-show="showFilters" class="filter-content">
+                    <div class="filter-group">
+                      <span class="filter-label">Type</span>
+                      <div class="filter-pills">
+                        <Button v-for="t in typeOptions" :key="t" :label="t" :class="[
+                          'p-button-rounded p-button-sm',
+                          selectedType === t
+                            ? 'p-button-primary'
+                            : 'p-button-outlined p-button-secondary',
+                        ]" @click="selectedType = t === selectedType ? '' : t" />
+                      </div>
+                    </div>
+                    <div class="filter-group">
+                      <span class="filter-label">Tags</span>
+                      <div class="filter-pills">
+                        <Button v-for="t in tagOptions" :key="t" :label="t" :class="[
+                          'p-button-rounded p-button-sm',
+                          selectedTags.includes(t)
+                            ? 'p-button-primary'
+                            : 'p-button-outlined p-button-secondary',
+                        ]" @click="toggleTag(t)" />
+                      </div>
+                    </div>
+                    <Button v-if="selectedType || selectedTags.length" label="Clear" icon="fa-duotone fa-solid fa-xmark"
+                      class="p-button-text p-button-sm" @click="clearFilters" />
+                  </div>
+                </Transition>
+              </div>
 
         <!-- Unified List (100% width cards) -->
         <section v-if="filteredAdventures.length" class="adventure-section">
@@ -200,6 +211,9 @@ const selectedTags = ref([]);
 // Highlight modal - simple approach
 const selectedAdventure = ref(null);
 const showHighlight = ref(false);
+
+// Filter expand state
+const showFilters = ref(false);
 
 // Handle highlight from URL query
 const openHighlight = (id) => {
@@ -483,6 +497,61 @@ const tagSeverity = (tag) => {
   transform: translateY(-1px) !important;
   box-shadow: 0 6px 16px rgba(220, 39, 44, 0.4) !important;
   background: linear-gradient(135deg, #dc272e, #7c3aed) !important;
+}
+
+/* Filter Bar - Collapsible */
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.5rem 0;
+}
+
+.filter-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--white);
+}
+
+.filter-title i {
+  color: var(--primary);
+}
+
+.filter-header .fa-chevron-down {
+  color: var(--dark-text-secondary);
+  font-size: 0.85rem;
+  transition: transform 0.2s ease;
+}
+
+.filter-header .fa-chevron-down.rotated {
+  transform: rotate(180deg);
+}
+
+.filter-content {
+  overflow: hidden;
+}
+
+.filter-collapse-enter-active,
+.filter-collapse-leave-active {
+  transition: all 0.3s ease;
+}
+
+.filter-collapse-enter-from,
+.filter-collapse-leave-to {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.filter-content {
+  overflow: hidden;
 }
 
 /* Hero CTA Section */
