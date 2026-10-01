@@ -790,6 +790,7 @@ const tagSeverity = (tag) => {
   border-radius: 0.75rem 0 0 0.75rem;
   overflow: hidden;
   position: relative;
+  border-radius: .5em
 }
 
 .cover-image {
@@ -893,8 +894,10 @@ const tagSeverity = (tag) => {
 
   .book-cover {
     width: 100%;
-    height: 180px;
-    border-radius: 0.75rem 0.75rem 0 0;
+    max-width: 200px;
+    height: auto;
+    aspect-ratio: 3/4;
+    margin: .5em auto 0;
   }
 
   .adventure-content {
